@@ -25,6 +25,7 @@ Outline
     * bare-bones
     * adding style
     * self-contained documents (+local mathjax)
+    * gotchas
     * the [documentation](http://pandoc.org/README.html) and [where to look for help](http://stackoverflow.com/questions/tagged/pandoc?sort=frequent&pageSize=15)
     * some other things pandoc does
 

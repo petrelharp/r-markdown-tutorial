@@ -72,6 +72,8 @@ $$
 \end{align}
 $$
 
+What's the difference between double ($$\sum_{k=1}^n k$$) and single ($\sum_{k=1}^n k$)dollar signs?
+
 
 ```
 For instance, $\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1}$.
@@ -81,3 +83,8 @@ For instance, $\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1}$.
 
 
 ## Another sub-section
+
+
+![thanks, internet](cat-pandoc.jpg)
+
+![smaller?](cat-pandoc.jpg cat){width=1in}

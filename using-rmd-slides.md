@@ -80,13 +80,14 @@ hitting carriage return
 always starts a new line.
 
 But, it's nice to have different (semantic) levels of spaces.
+
 ```
 
 
 Markdown syntax in one slide
 ----------------------------
 
-```
+```{.markdown}
 Level-one header
 ================
 
@@ -115,7 +116,6 @@ This list is ordered
 **Recommendation:** after using markdown for a little bit, 
 follow [this link to the documentation](http://pandoc.org/README.html)
 and spend half an hour reading it.
-
 ```
 
 
@@ -165,10 +165,19 @@ surrounded by dollar signs.
 
 
 ```
-For instance, $\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1}$.
+Either single ($\pi$), or double: $$\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1}$$.
 ```
-For instance, $\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1}$.
-
+Either single ($\pi$), or double: 
+$$\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1}$$.
+Or, even math environments *inside* double dollar signs:
+```{.markdown}
+$$
+\begin{align}
+    x &= (a+b)^2 - (a-b)^2 \\
+      &= 4ab
+\end{align}
+$$
+```
 
 
 
@@ -199,8 +208,31 @@ Other types of text: blockquotes
 > (at least PDF, HTML, EPUB). -- [John MacFarlane](http://john.macfarlane.usesthis.com/)
 
 
-Gotchas
--------
+Links and Images
+------------------
+
+A [link](http://www.w3.org/TR/html401/struct/links.html) looks like this, or [this](#links-and-images).
+```{.markdown}
+A [link](http://www.w3.org/TR/html401/struct/links.html) looks like this, or [this](#links-and-images).
+```
+
+An image looks **the same**, but with a `!` in front; the *link text* becomes the caption; the *link* gives the filename of the image.
+
+![thanks, internet](cat-pandoc)
+
+**Note:** you can't specify image size in the markdown ([yet](https://github.com/jgm/pandoc/issues/261#issuecomment-101078069)).
+
+
+
+Rendering markdown with [pandoc](http://pandoc.org)
+==================================================
+
+Wait, you said something about beautiful?
+-----------------------------------------
+
+
+Gotchas: it doesn't look right?
+----------------------------
 
 
 
