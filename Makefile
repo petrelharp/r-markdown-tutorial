@@ -1,7 +1,10 @@
-PANDOC_OPTS = --mathjax --standalone
+PANDOC_OPTS = --mathjax=/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML --standalone
 
 %.html : %.md
 	pandoc -o $@ $(PANDOC_OPTS) $<
+
+%.md : %.Rmd
+	cd $$(dirname $<); Rscript -e 'knitr::knit(basename("$<"),output=basename("$@"))'
 
 ## VARIOUS SLIDE METHODS
 REVEALJS_OPTS = -t revealjs -V theme=moon
@@ -12,13 +15,13 @@ SLIDES_OPTS = $(REVEALJS_OPTS)
 %.slides.html : %.md
 	pandoc -o $@ $(SLIDES_OPTS) $(PANDOC_OPTS) $<
 
-%.slides.revealjs.html : %.md
+%.revealjs.html : %.md
 	pandoc -o $@ $(REVEALJS_OPTS) $(PANDOC_OPTS) $<
 
-%.slides.slidy.html : %.md
+%.slidy.html : %.md
 	pandoc -o $@ $(SLIDY_OPTS) $(PANDOC_OPTS) $<
 
-%.slides.s5.html : %.md
+%.s5.html : %.md
 	pandoc -o $@ $(S5_OPTS) $(PANDOC_OPTS) $<
 
 
@@ -26,19 +29,24 @@ SLIDES_OPTS = $(REVEALJS_OPTS)
 
 %.rmarkdown.html : %.md
 	### rmarkdown::render()
-	Rscript -e 'setwd(dirname("$<"));rmarkdown::render(basename("$<"),output_file=basename("$@"))'
+	cd $$(dirname $<); Rscript -e 'rmarkdown::render(basename("$<"),output_file=basename("$@"))'
 
 %.markdown.html : %.md
 	### markdown::markdownToHTML()
-	Rscript -e 'setwd(dirname("$<"));markdown::markdownToHTML(basename("$<"),output=basename("$@"))'
+	cd $$(dirname $<); Rscript -e 'markdown::markdownToHTML(basename("$<"),output=basename("$@"))'
 
 %.knitr.html : %.md
 	### knitr::knit2html()
-	Rscript -e 'setwd(dirname("$<"));knitr::knit2html(basename("$<"),output=basename("$@"))'
+	cd $$(dirname $<); Rscript -e 'knitr::knit2html(basename("$<"),output=basename("$@"))'
 
 %.pander.html : %.md
 	### pander::Pandoc.convert()
 	# note that pander silently modifies input markdown file
 	# AND doesn't provide a way to set the output file
-	Rscript -e 'setwd(dirname("$<")); f.out <- pander::Pandoc.convert(text=paste(scan(basename("$<"),what="char",sep="\n"),collapse="\n"),open=FALSE); file.copy(f.out,basename("$@")); "$@"'
+	# so this WON'T work with files with images in
+	cd $$(dirname $<) && \
+		TEMPFILE="$(addprefix _pander_,$(<F))" && \
+		cp $(<F) $$TEMPFILE && \
+	   	Rscript -e 'f.out <- pander::Pandoc.convert(f="'$${TEMPFILE}'",open=FALSE); file.copy(f.out,basename("$@")); unlink(f.out); cat("$@","\n")' && \
+		rm $$TEMPFILE
 

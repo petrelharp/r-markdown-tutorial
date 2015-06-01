@@ -87,4 +87,4 @@ For instance, $\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1}$.
 
 ![thanks, internet](cat-pandoc.jpg)
 
-![smaller?](cat-pandoc.jpg cat){width=1in}
+![smaller?](cat-pandoc.jpg){width=1in}

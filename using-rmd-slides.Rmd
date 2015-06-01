@@ -1,0 +1,662 @@
+---
+title: "Narrowing the brain-publication barrier with R+markdown"
+author: "Peter Ralph"
+date: June 2, 2015
+---
+
+
+Markdown
+========
+
+
+Just write
+----------
+
+**Goal:** 
+don't even *think* about the layout,
+just the content.
+
+----------------------
+
+**Solutions:** 
+
+ - unformatted text 
+ - [markdown](http://commonmark.org/)
+ - [LaTeX](http://latex-project.org/intro.html)
+
+Markdown aims to be readable as-is, but *also* have methods to produce beautiful output. 
+
+. . .
+
+> A Markdown-formatted document should be publishable as-is, as plain text, without looking like it's been marked up with tags or formatting instructions. -- [John Gruber](http://daringfireball.net/projects/markdown/syntax#philosophy)
+
+
+
+No, really, don't think about the layout
+----------------------------------------
+
+Don't even *think* about the layout,
+just the content.
+
+> [...] it is better to leave document design to document designers, and to let authors get on with writing documents -- [intro to LaTeX](http://latex-project.org/intro.html)
+
+
+
+-----------------------------------------
+
+Today's goal:
+
+1. Learn a few simple rules
+2. and get going producing content.
+
+
+
+
+
+Structuring text
+----------------
+
+1.  Separate things with empty lines.
+2.  Wrap lines whenever you feel like it.
+
+![not a typewriter](Erika_9_typewriter.jpg)
+
+<!--
+On a typewriter,
+carriage return
+always does the same thing.
+
+But, it's nice to have different (semantic) levels of spaces.
+-->
+
+```
+**Principles:**
+
+1.  Separate things with newlines.
+2.  Pay attention to the number of spaces at the start of lines
+3.  Don't worry about linebreaks.
+
+If you're writing on a typewriter,
+hitting carriage return
+always starts a new line.
+
+But, it's nice to have different (semantic) levels of spaces.
+
+```
+
+
+---------------
+
+````{.markdown}
+Text formatting
+===============
+
+Inline markup
+-------------
+
+**Paragraphs** are just blocks of text
+beginning and ending with empty lines
+and *not* indented.
+Here are some ways we can change how the text looks:
+
+- **bold**
+- *italics*
+- ~~strikeout~~
+- super^scripts^ and sub~scripts~
+- and even `inline(code)`
+
+````
+
+----------------
+
+### Text formatting
+
+
+#### Inline markup
+
+
+**Paragraphs** are just blocks of text
+beginning and ending with empty lines
+and *not* indented.
+Here are some ways we can change how the text looks:
+
+- **bold**
+- *italics*
+- ~~strikeout~~
+- super^scripts^ and sub~scripts~
+- and even `inline(code)`
+
+
+----------------
+
+````{.markdown}
+Lists must be preceded by an empty line,
+
+1.  ordered or unordered.
+2.  Indenting subsequent content
+    
+    -  will continue the list
+
+        *   and nest
+        *   other lists.
+
+3.  *Indenting* means one tab, or four spaces.
+
+After using markdown for a bit, 
+follow [this link to the documentation](http://pandoc.org/README.html)
+and spend half an hour reading it.
+````
+
+
+---------------
+
+Lists must be preceded by an empty line,
+
+1.  ordered or unordered.
+2.  Indenting subsequent content
+    
+    -  will continue the list
+
+        *  and nest
+        *  other lists.
+
+3.  *Indenting* means one tab, or four spaces.
+
+After using markdown for a bit, 
+follow [this link to the documentation](http://pandoc.org/README.html)
+and spend half an hour reading it.
+
+
+
+Math
+----
+
+```
+Math goes between `$`, single ($\pi$), or double: 
+$$ \frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1} .$$
+```
+Math goes between `$`, single ($\pi$), or double: 
+$$\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1} .$$
+
+
+------------------
+
+Even math environments *inside* double dollar signs:
+```{.md}
+$$
+\begin{align}
+    x &= (a+b)^2 - (a-b)^2 \\
+      &= 4ab
+\end{align}
+$$
+```
+\begin{align}
+    x &= (a+b)^2 - (a-b)^2 \\
+      &= 4ab
+\end{align}
+
+
+
+Code blocks
+-----------
+
+    ```{.r}
+    msg <- "Hello, world."
+    echo(msg)
+    ```
+
+**produces**
+
+```{.r}
+msg <- "Hello, world."
+echo(msg)
+```
+
+Blockquotes
+-----------
+
+    > I also dream about a modern replacement for LaTeX 
+    > designed from the ground up to target multiple output formats 
+    > (at least PDF, HTML, EPUB). -- [John MacFarlane](http://john.macfarlane.usesthis.com/)
+
+**produces**
+
+> I also dream about a modern replacement for LaTeX 
+> designed from the ground up to target multiple output formats 
+> (at least PDF, HTML, EPUB). -- [John MacFarlane](http://john.macfarlane.usesthis.com/)
+
+
+Links and Images
+------------------
+
+[Links](http://www.w3.org/) just go in parentheses, 
+and can be [internal](#links-and-images).
+
+```{.markdown}
+[Links](http://www.w3.org/) just go in parentheses, 
+and can be [internal](#links-and-images).
+```
+
+----------------------
+
+Images are **the same** but with a `!` in front. \
+(You can't specify image size in the markdown, [yet](https://github.com/jgm/pandoc/issues/261#issuecomment-101078069).)
+
+```{.markdown}
+![thanks, internet](cat-pandoc.jpg)
+```
+
+![thanks, internet](cat-pandoc.jpg)
+
+
+
+
+Rendering markdown with [pandoc](http://pandoc.org)
+==================================================
+
+Get started!
+------------
+
+0.  Make a directory for this workshop.
+1.  Open a text editor.
+2.  Write something.
+3.  Save it as `notes.md`.
+
+-------------
+
+To compile, either:
+
+ *  Open `R`, run
+
+    ```{.r}
+    library(knitr)
+    knit2html("notes.md")
+    ```
+
+    and open `notes.html` in your web browser.
+
+ *  **or** click on *knit* in `Rstudio`
+
+
+Wait, but the layout?
+---------------------
+
+Remember,
+
+> [...] it is better to leave document design to document designers, and to let authors get on with writing documents.
+
+. . .
+
+If you **must**, then:
+
+- tweak the css
+- modify a [rmarkdown format](http://rmarkdown.rstudio.com/developer_custom_formats.html)
+- or a [pandoc template](http://pandoc.org/README.html#templates)
+
+
+
+Gotchas
+-------
+
+
+1.  many things need to begin with an empty line
+1.  carriage returns don't (usually) mean anything
+1.  but indentations do (*by at least four spaces*)
+
+To separate two numbered lists,
+add a non-indented, invisible element,
+like an html comment:
+
+```{.html}
+<!-- -->
+```
+
+
+For more info see [the documentation](http://pandoc.org/README.html#the-four-space-rule).
+
+
+
+Metadata
+--------
+
+At the top of your document, add 
+```{.yaml}
+---
+title: YOUR TITLE HERE
+author: YOUR NAME HERE
+date: June 2, 2015
+---
+```
+
+... the [YAML](http://yaml.org/) metadata, \
+delimited by **exactly three** dashes.
+
+
+-----------------
+
+**Note:** Besides setting the title,
+you can control the **output** in
+[many](http://tex.stackexchange.com/questions/139139/adding-headers-and-footers-using-pandoc/139205#139205) 
+[ways](http://rmarkdown.rstudio.com/html_document_format.html#pandoc-arguments) 
+here.
+
+*For example*: add
+
+```{.yaml}
+output_format : pdf_document
+```
+
+and render with `rmarkdown::render("notes.md")`.
+
+
+Under the hood
+--------------
+
+[`pandoc`](http://pandoc.org/README.html)
+
+```{.sh}
+pandoc --help
+```
+
+more notes in [the appendix](#technical-notes)
+
+
+
+Adding in R
+===========
+
+
+-----------
+
+**Goal:**
+add R code to the document,
+*along with its output*.
+
+. . .
+
+![knitr](knitr-screenshot.png)
+
+
+Go ahead
+--------
+
+Just add a *chunk* of R code, wrapped in
+
+`````{.Rmd}
+```{r}
+# PUT ARBITRARY R CODE HERE
+```
+`````
+
+. . .
+
+**Try it!**
+
+----------
+
+`````{.Rmd}
+```{r}
+sqrt(cumsum(6/(1:20)^2))
+```
+`````
+
+```{r}
+sqrt(cumsum(6/(1:20)^2))
+```
+
+--------
+
+`````{.Rmd}
+```{r}
+plot(sqrt(cumsum(6/(1:20)^2)))
+abline(h=pi)
+```
+`````
+
+```{r}
+plot(sqrt(cumsum(6/(1:20)^2)))
+abline(h=pi)
+```
+
+Show only the results:
+----------------------
+
+`````{.Rmd}
+```{r }
+plot(sqrt(cumsum(6/(1:20)^2)))
+abline(h=pi)
+```
+`````
+
+```{r}
+plot(sqrt(cumsum(6/(1:20)^2)))
+abline(h=pi)
+```
+
+
+Chunk options
+-------------
+
+Add a name to each chunk,
+and set [chunk options](http://yihui.name/knitr/options/)
+
+`````{.Rmd}
+```{r setup, fig.height=4}
+# (PLOT SOMETHING)
+```
+`````
+
+These must be *valid R expressions*.
+
+
+Some options
+------------
+
+`echo=(TRUE|FALSE)` 
+
+: include source code in the output?
+
+`results="(markup|asis)"` 
+
+: style the output or not?
+
+`include=(FALSE|TRUE)` 
+
+: include anything in the output?
+
+
+-------------
+
+Set them globally up top as so:
+
+```````{.Rmd}
+```{r, include=FALSE}
+fig.dim <- 5
+opts_chunk$set(fig.height=fig.dim,fig.width=2*fig.dim,fig.align='center')
+```
+```````
+
+
+Tables
+------
+
+One option: use `xtable` + `results="asis"`.
+
+```````{.Rmd}
+```{r results="asis"}
+library(xtable)
+dtab <- xtable( table( sample( letters, 300, replace=TRUE ) ) )
+print(dtab,type='html')
+```
+```````
+
+```{r results="asis"}
+library(xtable)
+dtab <- xtable( table( sample( letters, 300, replace=TRUE ) ) )
+print(dtab,type='html')
+```
+
+
+R everywhere
+------------
+
+You can `r paste(c(letters," ")[c( 9,14,19,5,18,20,27,3,15,4,5,27,1,14,25,23,8,5,18,5 )],collapse='')`.
+
+`````{.Rmd}
+You can `r paste(c(letters," ")[c( 9,14,19,5,18,20,27,3,15,4,5,27,1,14,25,23,8,5,18,5 )],collapse='')`.
+`````
+
+--------------
+
+Even in the YAML header.
+
+Go change yours!
+
+    ---
+    title: My notes
+    author: Peter Ralph
+    date: `r date()`
+    ---
+
+
+
+
+Other resources
+---------------
+
+ -  [Karl Broman's](http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html) intro to Rmarkdown
+ -  the extensive, excellent [documentation for pandoc](http://pandoc.org/README.html)
+
+
+Technical notes:
+================
+
+
+General
+-------
+
+*  `-o (output file name)` : where to put output
+*  `--standalone` : produces a standalone document, not a code fragment (using one of [these](https://github.com/jgm/pandoc-templates) [templates](http://pandoc.org/README.html#templates))
+*  `--from=(format name)[+/-(extension name)]` : what to write out to (defaults to html) and optional turning on/off of various behavior, [listed here](http://pandoc.org/README.html#pandocs-markdown)
+*  `--include-in-header=(file name)` : at the end of the header, e.g. css, javascript, `\newcommand`, etc. (but see `--css`)
+*  `--include-before-body=(file name)` : at the beginning of the body, e.g. navigation bars, `\maketitle`, etc.
+
+
+For presentations
+-----------------
+
+See [the documentation](http://pandoc.org/README.html#producing-slide-shows-with-pandoc)
+
+*  `--self-contained` : everything in one file (but see `--mathjax`)
+*  `--mathjax[=URL]` : points to the `MathJax.js` script, *incompatible* with `--selfcontained`
+*  `--variable=KEY[:VAL]` : assign template variable KEY to VAL, for instance:
+
+    *  `theme` : for beamer or reveal.js presentations
+    *  but note these can be also [set in metadata](http://tex.stackexchange.com/questions/139139/adding-headers-and-footers-using-pandoc/139205#139205)
+
+*  `--incremental` : step through lists
+*  `--slide-level` : headers above this level create sections; below this create slides.
+*  `--css=(URL)` : include the css linked to
+
+
+Options for rendering using R
+-----------------------------
+
+-  `markdown::markdownToHTML( )` : lightweight but does some styling
+
+    -  used by `knitr::knit2html()`
+    -  automatically includes mathjax
+
+-  `knitr::knit2html( )` : calls `markdown::markdownToHTML( )`, almost identical
+
+-  `pander::Pandoc.convert( )` : looks quite nice, brings in jquery and others
+
+    -  `pander` is an entire schema to translate `R` objects *to markdown*
+    -  imports a bunch of javascript and css
+
+-  `rmarkdown::render( )` : high-level, does everything, has a nice template.
+
+    -  processes YAML header
+    -  knits if necessary
+    -  is what `Rstudio` relies on, which comes bundled with a binary for pandoc.
+
+
+Other technicalities
+--------------------
+
+* **indentation** : one tab (four spaces) indicates a code block *except* within lists
+
+* **header attributes** can be specified by appending `{#identifier .class .class key=value key=value}` afterwards
+
+    * e.g. `{# foo .unnumbered}` makes a section that can be linked to with `[link to foo](#foo)` and is unnumbered
+    * but sections without identifiers will be assigned ones automatically 
+
+
+
+Other notes on making slides
+----------------------------
+
+A paragraph with three dots:
+```
+
+. . .
+
+```
+
+makes a pause.
+
+
+About math rendering
+--------------------
+
+There are [many options](http://pandoc.org/README.html#math),
+but probably `--mathjax` is the best?
+
+Note that it is supposed to render as far as possible with unicode,
+but this m$\alpha$y depend on the proper fonts being installed?
+
+
+
+Other types of text: line blocks
+--------------------------------
+
+These are just markdown except it pays attention to linebreaks.
+
+    | Molecular & Computational Biology
+    | University of Southern California
+    | 1050 Child Way, RRI 201 (MCB)
+    | Los Angeles, CA 90089-2910
+
+**produces**
+
+| Molecular & Computational Biology
+| University of Southern California
+| 1050 Child Way, RRI 201 (MCB)
+| Los Angeles, CA 90089-2910
+
+
+Other types of text: definition lists
+-------------------------------------
+
+To make a **definition list** 
+
+:  Each term must fit on one line, which may optionally be followed by a blank line, 
+    and must be followed by one or more definitions. 
+    A definition begins with a colon or tilde, which may be indented one or two spaces.
+
+    A term may have multiple definitions, and each definition may consist of one or more block elements (paragraph, code block, list, etc.), each indented four spaces or one tab stop. The body of the definition (including the first line, aside from the colon or tilde) should be indented four spaces.
+
+
+Self-contained documents
+------------------------
+
+HTML documents can stitch together lots of different pieces: images, css, javascript, etcetera.  These are *not* nice to email.
+
+*But:* `pandoc` can produce *self-contained* documents, that are email-ready.
+`rmarkdown` does this by default.
+
+*Warning:* the best way of displaying math relies on [mathjax](http://mathjax.org),
+which is a "large" javascript library,
+and is *not* included. 
+If you use LaTeX math,
+you need to host a local copy of mathjax.
