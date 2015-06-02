@@ -59,7 +59,7 @@ Structuring text
 1.  Separate things with empty lines.
 2.  Wrap lines whenever you feel like it.
 
-![not a typewriter](Erika_9_typewriter.jpg)
+![your laptop?](Erika_9_typewriter.jpg)
 
 <!--
 On a typewriter,
@@ -69,22 +69,10 @@ always does the same thing.
 But, it's nice to have different (semantic) levels of spaces.
 -->
 
-```
-**Principles:**
-
-1.  Separate things with newlines.
-2.  Pay attention to the number of spaces at the start of lines
-3.  Don't worry about linebreaks.
-
-If you're writing on a typewriter,
-hitting carriage return
-always starts a new line.
-
-But, it's nice to have different (semantic) levels of spaces.
-
-```
 
 
+
+Source
 ---------------
 
 ````{.markdown}
@@ -94,19 +82,17 @@ Text formatting
 Inline markup
 -------------
 
-**Paragraphs** are just blocks of text
-beginning and ending with empty lines
-and *not* indented.
-Here are some ways we can change how the text looks:
+**Paragraphs** begin and end with empty lines,
+and are *not* indented.
 
-- **bold**
-- *italics*
+- **bold** and *emphasis*
 - ~~strikeout~~
 - super^scripts^ and sub~scripts~
-- and even `inline(code)`
+- and `inline_code($fixed.width)`
 
 ````
 
+Result
 ----------------
 
 ### Text formatting
@@ -115,18 +101,16 @@ Here are some ways we can change how the text looks:
 #### Inline markup
 
 
-**Paragraphs** are just blocks of text
-beginning and ending with empty lines
-and *not* indented.
-Here are some ways we can change how the text looks:
+**Paragraphs** begin and end with empty lines,
+and are *not* indented.
 
-- **bold**
-- *italics*
+- **bold** and *emphasis*
 - ~~strikeout~~
 - super^scripts^ and sub~scripts~
-- and even `inline(code)`
+- and `inline_code($fixed.width)`
 
 
+Source
 ----------------
 
 ````{.markdown}
@@ -143,8 +127,7 @@ Lists must be preceded by an empty line,
 3.  *Indenting* means one tab, or four spaces.
 
 After using markdown for a bit, 
-follow [this link to the documentation](http://pandoc.org/README.html)
-and spend half an hour reading it.
+go read [pandoc's documentation](http://pandoc.org/README.html).
 ````
 
 
@@ -163,8 +146,7 @@ Lists must be preceded by an empty line,
 3.  *Indenting* means one tab, or four spaces.
 
 After using markdown for a bit, 
-follow [this link to the documentation](http://pandoc.org/README.html)
-and spend half an hour reading it.
+go read [pandoc's documentation](http://pandoc.org/README.html).
 
 
 
@@ -202,14 +184,14 @@ Code blocks
 
     ```{.r}
     msg <- "Hello, world."
-    echo(msg)
+    print(msg)
     ```
 
 **produces**
 
-```{.r}
+```{.R}
 msg <- "Hello, world."
-echo(msg)
+print(msg)
 ```
 
 Blockquotes
@@ -243,10 +225,10 @@ Images are **the same** but with a `!` in front. \
 (You can't specify image size in the markdown, [yet](https://github.com/jgm/pandoc/issues/261#issuecomment-101078069).)
 
 ```{.markdown}
-![thanks, internet](cat-pandoc.jpg)
+![oh, internet](cat-pandoc.jpg)
 ```
 
-![thanks, internet](cat-pandoc.jpg)
+![oh, internet](cat-pandoc.jpg)
 
 
 
@@ -303,6 +285,8 @@ Gotchas
 1.  carriage returns don't (usually) mean anything
 1.  but indentations do (*by at least four spaces*)
 
+. . .
+
 To separate two numbered lists,
 add a non-indented, invisible element,
 like an html comment:
@@ -310,6 +294,8 @@ like an html comment:
 ```{.html}
 <!-- -->
 ```
+
+. . .
 
 
 For more info see [the documentation](http://pandoc.org/README.html#the-four-space-rule).
@@ -358,7 +344,7 @@ Under the hood
 pandoc --help
 ```
 
-more notes in [the appendix](#technical-notes)
+more notes in [the appendix](technical-notes.html)
 
 
 
@@ -439,24 +425,31 @@ plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
 abline(h=pi, col='red')
 ```
 
+What's going on
+---------------
+
+1.  `knitr` uses a *regular expression* to find code chunks
+
+    -  pulls these out, 
+    -  evaluates them one at a time
+    -  and inserts "the results" back in
+
+2.  `pandoc` renders the resulting markdown file
+
+    -   with various choices of styling
+
 
 Chunk options
 -------------
 
-Add a name to each chunk,
-and set [chunk options](http://yihui.name/knitr/options/)
+Name each chunk,
+and set [options](http://yihui.name/knitr/options/)
+for [what gets printed](http://yihui.name/knitr/demo/output/)
 
 `````{.Rmd}
- ```{r setup, fig.height=4}
- # (PLOT SOMETHING)
- ```
+ ```{r my_chunk_name, fig.height=4, echo=FALSE}
 `````
 
-These must be *valid R expressions*.
-
-
-Some options
-------------
 
 `echo=(TRUE|FALSE)` 
 
@@ -473,7 +466,7 @@ Some options
 
 -------------
 
-Set them globally up top as so:
+Set document defaults up top:
 
 ```````{.Rmd}
  ```{r, include=FALSE}
@@ -513,15 +506,16 @@ One option: use `pander` + `results="asis"`.
 R everywhere
 ------------
 
-You can 
-`r paste(letters[c(9,14,19,5,18,20)],collapse='')` 
-code anywhere.
-
 `````{.Rmd}
 You can 
 ``r "r"` paste(letters[c(9,14,19,5,18,20)],collapse='')` 
 code anywhere.
 `````
+
+You can 
+`r paste(letters[c(9,14,19,5,18,20)],collapse='')` 
+code anywhere.
+
 
 --------------
 
@@ -556,6 +550,34 @@ Here is a [pre-written solution](linear-regression.html).
 
 Your turn
 ---------
+
+Download the 
+[iris dataset](https://raw.githubusercontent.com/petrelharp/r-markdown-tutorial/master/examples/iris.tsv) 
+to a new directory.
+
+or just do
+
+````{.R}
+data(iris)
+write.table(iris,file="examples/iris.tsv",sep="\t")
+````
+
+----------
+
+1.  Read in the data.
+
+2.  Describe the dataset: number of observations, variables, etcetera.
+
+    - inline `R` code (`` ``r "r nrow(data)"`` ``)
+
+3.  Make a table of the number of observations for each species.
+
+    * `results="asis"` and `pander()`
+
+4.  Plot the flower dimensions against each other,
+
+    * first using `pairs()`, then
+    * colored by species.
 
 
 
@@ -625,14 +647,15 @@ legend( "topleft", pch=1, legend=levels(xy$type), col=1:nlevels(xy$type) )
 
 **Render it:**
 
-```{r, results="hide"}
+
+```{r, results="hide", messages=FALSE, warnings=FALSE }
 library(knitr)
 owd <- setwd("examples/thedata")  # determines where output will go
 opts_knit$set(root.dir=".")  # determines where code is evaluated
 file.names <- list.files(".",".*tsv")
 for (input.file in file.names) {
     output.file <- gsub(".tsv$",".viz.html",input.file)
-    knit2html("../simple-template.Rmd", output=output.file)
+    knit2html("../simple-template.Rmd", output=output.file, quiet=TRUE)
 }
 setwd(owd)
 ```
@@ -642,7 +665,15 @@ setwd(owd)
 
 **Look at them:**
 
-```{r make_links, results="asis"}
+`````{.Rmd}
+ ```{r make_links, results="asis"}
+ output.files <- file.path("examples/thedata",gsub(".tsv$",".viz.html",file.names))
+ links <- paste("[",file.names,"](",output.files,")",sep='')
+ cat( paste("- ", links, "\n"), "\n" )
+ ```
+`````
+
+```{r make_links, results="asis", echo=FALSE}
 output.files <- file.path("examples/thedata",gsub(".tsv$",".viz.html",file.names))
 links <- paste("[",file.names,"](",output.files,")",sep='')
 cat( paste("- ", links, "\n"), "\n" )

@@ -13,7 +13,7 @@ KNITR_PATTERNS = list( chunk.begin="^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$", ch
 	cd $$(dirname $<); Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); knitr::knit(basename("$<"),output=basename("$@"))'
 
 ## VARIOUS SLIDE METHODS
-REVEALJS_OPTS = -t revealjs -V theme=moon
+REVEALJS_OPTS = -t revealjs -V theme=simple -V transition=none -H resources/adjust-revealjs.style
 SLIDY_OPTS = -t slidy
 S5_OPTS = -t s5
 SLIDES_OPTS = $(REVEALJS_OPTS)
