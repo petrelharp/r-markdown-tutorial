@@ -1,10 +1,12 @@
-<style>
+<style type="text/css">
 
 .reveal h1 { font-size: 2.5em; } 
 
 .reveal .slides { text-align: left; }
 
 .reveal .slides figure { text-align: center; }
+
+.reveal figcaption { display: none; }
 
 </style>
 

@@ -9,22 +9,33 @@ Markdown
 ========
 
 
-Just write
-----------
+Goal:
+-----
 
-**Goal:** 
-don't even *think* about the layout,
-just the content.
+
+Communicate your thoughts to your collaborators and your future self,
+
+
+. . .
+
+combining text, math, documented code,
+
+. . .
+
+and **no fuss**.
+
+
 
 ----------------------
 
-**Solutions:** 
+No fussing about layout:
 
  - unformatted text 
  - [markdown](http://commonmark.org/)
  - [LaTeX](http://latex-project.org/intro.html)
 
-Markdown aims to be readable as-is, but *also* have methods to produce beautiful output. 
+Markdown aims to be readable as-is, \
+but has methods to produce beautiful output. 
 
 . . .
 
@@ -82,8 +93,8 @@ Text formatting
 Inline markup
 -------------
 
-**Paragraphs** begin and end with empty lines,
-and are *not* indented.
+**Paragraphs** begin and end 
+with empty lines, and are *not* indented.
 
 - **bold** and *emphasis*
 - ~~strikeout~~
@@ -241,7 +252,7 @@ Get started!
 
 0.  Make a directory for this workshop.
 1.  Open a text editor.
-2.  Write something.
+2.  Write some text.
 3.  Save it as `notes.md`.
 
 -------------
@@ -285,15 +296,6 @@ Gotchas
 1.  carriage returns don't (usually) mean anything
 1.  but indentations do (*by at least four spaces*)
 
-. . .
-
-To separate two numbered lists,
-add a non-indented, invisible element,
-like an html comment:
-
-```{.html}
-<!-- -->
-```
 
 . . .
 
@@ -334,6 +336,16 @@ output_format : pdf_document
 
 and render with `rmarkdown::render("notes.md")`.
 
+. . .
+
+**or even:**
+
+
+```{.yaml}
+output_format : word_document
+```
+
+
 
 Under the hood
 --------------
@@ -343,6 +355,9 @@ Under the hood
 ```{.sh}
 pandoc --help
 ```
+
+![jgm](jgm.png)
+
 
 more notes in [the appendix](technical-notes.html)
 
@@ -381,12 +396,21 @@ Just add a *chunk* of R code, wrapped in
 ----------
 
 `````{.Rmd}
+Look,
+$$ \lim_{n \to \infty} \sum_{k=0}^n \frac{ (-1)^n }{ 2n+1 } = \frac{\pi}{4} , $$
+see?
+
  ```{r}
  cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) )
  ```
 `````
 
-**produces**
+. . .
+
+Look,
+$$ \lim_{n \to \infty} \sum_{k=0}^n \frac{ (-1)^n }{ 2n+1 } = \frac{\pi}{4} , $$
+see?
+
 
 ```{r}
 cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) )
@@ -401,15 +425,17 @@ cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) )
  ```
 `````
 
-**produces**
+. . .
+
 
 ```{r, fig.height=3.5}
 plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
 abline(h=pi, col='red')
 ```
 
-Show only the results:
 ----------------------
+
+**Want to omit the ugly code?**
 
 `````{.Rmd}
  ```{r, echo=FALSE}
@@ -418,12 +444,17 @@ Show only the results:
  ```
 `````
 
-**produces**
+. . .
 
 ```{r, echo=FALSE, fig.height=3.5}
 plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
 abline(h=pi, col='red')
 ```
+
+. . .
+
+**but:** leave it in!
+
 
 What's going on
 ---------------
@@ -586,9 +617,9 @@ Templated reports
 
 -----------------
 
-**Do this** to set up some fake data:
+Set up some fake data:
 
-```{r make_data}
+```{r make_data, warning=FALSE}
 dir.create("examples/thedata")
 owd <- setwd("examples/thedata")
 for (samp in LETTERS[1:10]) {
@@ -604,7 +635,7 @@ setwd(owd)
 
 ------------------
 
-We now have 26 datasets, \
+We now have 10 datasets, \
 and would like to *visualize* each, 
 like:
 
@@ -680,6 +711,23 @@ cat( paste("- ", links, "\n"), "\n" )
 ```
 
 
+Another exercise
+----------------
+
+**Goal:**
+Compare different $k$ with $k$-means on the `iris` dataset.
+
+1.  Make subdirectories, called `iris/k`, for $1 \le k \le 5$.
+2.  In each make a file called `config.js`, using e.g.
+
+    ```{.R}
+    library(jsonlite)
+    cat(toJSON(list(k=3)),file="config.json")
+    ```
+3.  Make a template that reads `config.js` (with `fromJSON`)
+   and then runs `kmeans` with the appropriate `k`.
+
+
 Other resources
 ===============
 
@@ -689,6 +737,6 @@ Other resources
  *  my [technical notes](technical-notes.html) I made while writing this up
  -  [Karl Broman's](http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html) intro to Rmarkdown
  -  the extensive, excellent [documentation for pandoc](http://pandoc.org/README.html)
- -  [StackOverflow](http://stackoverflow.com/)
+ -  [Stack](http://stackoverflow.com/questions/tagged/rmarkdown)[Overflow](http://stackoverflow.com/questions/tagged/knitr)
 
 
