@@ -4,6 +4,9 @@ author: "Peter Ralph"
 date: June 2, 2015
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_knit$set(self.contained=TRUE)
+```
 
 Markdown
 ========
