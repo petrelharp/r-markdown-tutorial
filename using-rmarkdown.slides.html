@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Peter Ralph" />
+  <title>Narrowing the brain-publication barrier with R+markdown</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css"/>
+  <style type="text/css">code{white-space: pre;}</style>
+  <style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+  <!-- If the query includes 'print-pdf', include the PDF print sheet -->
+  <script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+      var link = document.createElement( 'link' );
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'reveal.js/css/print/pdf.css';
+      document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+  <script src="/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <style type="text/css">
+  
+  .reveal h1 { font-size: 2.5em; } 
+  
+  .reveal .slides { text-align: left; }
+  
+  .reveal .slides figure { text-align: center; }
+  
+  .reveal figcaption { display: none; }
+  
+  </style>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section>
+    <h1 class="title">Narrowing the brain-publication barrier with R+markdown</h1>
+    <h2 class="author">Peter Ralph</h2>
+    <h3 class="date">June 2, 2015</h3>
+</section>
+
+<section><section id="markdown" class="titleslide slide level1"><h1>Markdown</h1></section><section id="goal" class="slide level2">
+<h1>Goal:</h1>
+<p>Communicate your thoughts to your collaborators and your future self,</p>
+<div class="fragment">
+<p>combining text, math, documented code,</p>
+</div>
+<div class="fragment">
+<p>and <strong>no fuss</strong>.</p>
+</div>
+</section><section class="slide level2">
+
+<p>No fussing about layout:</p>
+<ul>
+<li>unformatted text</li>
+<li><a href="http://commonmark.org/">markdown</a></li>
+<li><a href="http://latex-project.org/intro.html">LaTeX</a></li>
+</ul>
+<p>Markdown aims to be readable as-is,<br />
+but has methods to produce beautiful output.</p>
+<div class="fragment">
+<blockquote>
+<p>A Markdown-formatted document should be publishable as-is, as plain text, without looking like it's been marked up with tags or formatting instructions. -- <a href="http://daringfireball.net/projects/markdown/syntax#philosophy">John Gruber</a></p>
+</blockquote>
+</div>
+</section><section id="no-really-dont-think-about-the-layout" class="slide level2">
+<h1>No, really, don't think about the layout</h1>
+<p>Don't even <em>think</em> about the layout, just the content.</p>
+<blockquote>
+<p>[...] it is better to leave document design to document designers, and to let authors get on with writing documents -- <a href="http://latex-project.org/intro.html">intro to LaTeX</a></p>
+</blockquote>
+</section><section class="slide level2">
+
+<p>Today's goal:</p>
+<ol type="1">
+<li>Learn a few simple rules</li>
+<li>and get going producing content.</li>
+</ol>
+</section><section id="structuring-text" class="slide level2">
+<h1>Structuring text</h1>
+<ol type="1">
+<li>Separate things with empty lines.</li>
+<li>Wrap lines whenever you feel like it.</li>
+</ol>
+<figure>
+<img src="Erika_9_typewriter.jpg" alt="your laptop?" /><figcaption>your laptop?</figcaption>
+</figure>
+<!--
+On a typewriter,
+carriage return
+always does the same thing.
+
+But, it's nice to have different (semantic) levels of spaces.
+-->
+</section><section id="source" class="slide level2">
+<h1>Source</h1>
+<div class="sourceCode"><pre class="sourceCode markdown"><code class="sourceCode markdown">Text formatting
+===============
+
+Inline markup
+-------------
+
+**Paragraphs** begin and end 
+with empty lines, and are *not* indented.
+
+- **bold** and *emphasis*
+- ~~strikeout~~
+<span class="fl">- super^scripts^ and sub~scripts~</span>
+<span class="fl">- and </span><span class="bn">`inline_code($fixed.width)`</span></code></pre></div>
+</section><section id="result" class="slide level2">
+<h1>Result</h1>
+<h3 id="text-formatting">Text formatting</h3>
+<h4 id="inline-markup">Inline markup</h4>
+<p><strong>Paragraphs</strong> begin and end with empty lines, and are <em>not</em> indented.</p>
+<ul>
+<li><strong>bold</strong> and <em>emphasis</em></li>
+<li><del>strikeout</del></li>
+<li>super<sup>scripts</sup> and sub<sub>scripts</sub></li>
+<li>and <code>inline_code($fixed.width)</code></li>
+</ul>
+</section><section id="source-1" class="slide level2">
+<h1>Source</h1>
+<div class="sourceCode"><pre class="sourceCode markdown"><code class="sourceCode markdown">Lists must be preceded by an empty line,
+
+1. <span class="fl"> ordered or unordered.</span>
+<span class="fl">2.  Indenting subsequent content</span>
+<span class="fl">  </span>  
+<span class="fl">    -  will continue the list</span>
+
+<span class="fl">        *   and nest</span>
+<span class="fl">        *   other lists.</span>
+
+<span class="fl">3.  *Indenting* means one tab, or four spaces.</span>
+
+<span class="fl">After using markdown for a bit, </span>
+<span class="fl">go read </span><span class="ot">[pandoc&#39;s documentation](http://pandoc.org/README.html)</span><span class="fl">.</span></code></pre></div>
+</section><section class="slide level2">
+
+<p>Lists must be preceded by an empty line,</p>
+<ol type="1">
+<li>ordered or unordered.</li>
+<li><p>Indenting subsequent content</p>
+<ul>
+<li><p>will continue the list</p>
+<ul>
+<li>and nest</li>
+<li>other lists.</li>
+</ul></li>
+</ul></li>
+<li><p><em>Indenting</em> means one tab, or four spaces.</p></li>
+</ol>
+<p>After using markdown for a bit, go read <a href="http://pandoc.org/README.html">pandoc's documentation</a>.</p>
+</section><section id="math" class="slide level2">
+<h1>Math</h1>
+<pre><code>Math goes between `$`, single ($\pi$), or double: 
+$$ \frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1} .$$</code></pre>
+<p>Math goes between <code>$</code>, single (<span class="math inline">\(\pi\)</span>), or double: <span class="math display">\[\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1} .\]</span></p>
+</section><section class="slide level2">
+
+<p>Even math environments <em>inside</em> double dollar signs:</p>
+<pre class="md"><code>$$
+\begin{align}
+    x &amp;= (a+b)^2 - (a-b)^2 \\
+      &amp;= 4ab
+\end{align}
+$$</code></pre>
+\begin{align}
+    x &amp;= (a+b)^2 - (a-b)^2 \\
+      &amp;= 4ab
+\end{align}
+</section><section id="code-blocks" class="slide level2">
+<h1>Code blocks</h1>
+<pre><code>```{.r}
+msg &lt;- &quot;Hello, world.&quot;
+print(msg)
+```</code></pre>
+<p><strong>produces</strong></p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r">msg &lt;-<span class="st"> &quot;Hello, world.&quot;</span>
+<span class="kw">print</span>(msg)</code></pre></div>
+</section><section id="blockquotes" class="slide level2">
+<h1>Blockquotes</h1>
+<pre><code>&gt; I also dream about a modern replacement for LaTeX 
+&gt; designed from the ground up to target multiple output formats 
+&gt; (at least PDF, HTML, EPUB). -- [John MacFarlane](http://john.macfarlane.usesthis.com/)</code></pre>
+<p><strong>produces</strong></p>
+<blockquote>
+<p>I also dream about a modern replacement for LaTeX designed from the ground up to target multiple output formats (at least PDF, HTML, EPUB). -- <a href="http://john.macfarlane.usesthis.com/">John MacFarlane</a></p>
+</blockquote>
+</section><section id="links-and-images" class="slide level2">
+<h1>Links and Images</h1>
+<p><a href="http://www.w3.org/">Links</a> just go in parentheses, and can be <a href="#/links-and-images">internal</a>.</p>
+<div class="sourceCode"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span class="ot">[Links](http://www.w3.org/)</span> just go in parentheses, 
+and can be <span class="ot">[internal](#links-and-images)</span>.</code></pre></div>
+</section><section class="slide level2">
+
+<p>Images are <strong>the same</strong> but with a <code>!</code> in front.<br />
+(You can't specify image size in the markdown, <a href="https://github.com/jgm/pandoc/issues/261#issuecomment-101078069">yet</a>.)</p>
+<div class="sourceCode"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span class="al">![oh, internet](cat-pandoc.jpg)</span></code></pre></div>
+<figure>
+<img src="cat-pandoc.jpg" alt="oh, internet" /><figcaption>oh, internet</figcaption>
+</figure>
+</section></section>
+<section><section id="rendering-markdown-with-pandoc" class="titleslide slide level1"><h1>Rendering markdown with <a href="http://pandoc.org">pandoc</a></h1></section><section id="get-started" class="slide level2">
+<h1>Get started!</h1>
+<ol start="0" type="1">
+<li>Make a directory for this workshop.</li>
+<li>Open a text editor.</li>
+<li>Write some text.</li>
+<li>Save it as <code>notes.md</code>.</li>
+</ol>
+</section><section class="slide level2">
+
+<p>To compile, either:</p>
+<ul>
+<li><p>Open <code>R</code>, run</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
+<span class="kw">knit2html</span>(<span class="st">&quot;notes.md&quot;</span>)</code></pre></div>
+<p>and open <code>notes.html</code> in your web browser.</p></li>
+<li><p><strong>or</strong> click on <em>knit</em> in <code>Rstudio</code></p></li>
+</ul>
+</section><section id="wait-but-the-layout" class="slide level2">
+<h1>Wait, but the layout?</h1>
+<p>Remember,</p>
+<blockquote>
+<p>[...] it is better to leave document design to document designers, and to let authors get on with writing documents.</p>
+</blockquote>
+<div class="fragment">
+<p>If you <strong>must</strong>, then:</p>
+<ul>
+<li>tweak the css</li>
+<li>modify a <a href="http://rmarkdown.rstudio.com/developer_custom_formats.html">rmarkdown format</a></li>
+<li>or a <a href="http://pandoc.org/README.html#templates">pandoc template</a></li>
+</ul>
+</div>
+</section><section id="gotchas" class="slide level2">
+<h1>Gotchas</h1>
+<ol type="1">
+<li>many things need to begin with an empty line</li>
+<li>carriage returns don't (usually) mean anything</li>
+<li>but indentations do (<em>by at least four spaces</em>)</li>
+</ol>
+<div class="fragment">
+<p>For more info see <a href="http://pandoc.org/README.html#the-four-space-rule">the documentation</a>.</p>
+</div>
+</section><section id="metadata" class="slide level2">
+<h1>Metadata</h1>
+<p>At the top of your document, add</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="ot">---</span>
+<span class="fu">title:</span> YOUR TITLE HERE
+<span class="fu">author:</span> YOUR NAME HERE
+<span class="fu">date:</span> June 2, 2015
+<span class="ot">---</span></code></pre></div>
+<p>... the <a href="http://yaml.org/">YAML</a> metadata,<br />
+delimited by <strong>exactly three</strong> dashes.</p>
+</section><section class="slide level2">
+
+<p><strong>Note:</strong> Besides setting the title, you can control the <strong>output</strong> in <a href="http://tex.stackexchange.com/questions/139139/adding-headers-and-footers-using-pandoc/139205#139205">many</a> <a href="http://rmarkdown.rstudio.com/html_document_format.html#pandoc-arguments">ways</a> here.</p>
+<p><em>For example</em>: add</p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">output_format :</span> pdf_document</code></pre></div>
+<p>and render with <code>rmarkdown::render(&quot;notes.md&quot;)</code>.</p>
+<div class="fragment">
+<p><strong>or even:</strong></p>
+<div class="sourceCode"><pre class="sourceCode yaml"><code class="sourceCode yaml"><span class="fu">output_format :</span> word_document</code></pre></div>
+</div>
+</section><section id="under-the-hood" class="slide level2">
+<h1>Under the hood</h1>
+<p><a href="http://pandoc.org/README.html"><code>pandoc</code></a></p>
+<pre class="sh"><code>pandoc --help</code></pre>
+<figure>
+<img src="jgm.png" alt="jgm" /><figcaption>jgm</figcaption>
+</figure>
+<p>more notes in <a href="technical-notes.html">the appendix</a></p>
+</section></section>
+<section><section id="adding-in-r" class="titleslide slide level1"><h1>Adding in R</h1></section><section class="slide level2">
+
+<p><strong>Goal:</strong> add R code to the document, <em>along with its output</em>.</p>
+<div class="fragment">
+<figure>
+<img src="knitr-screenshot.png" alt="knitr" /><figcaption>knitr</figcaption>
+</figure>
+</div>
+</section><section id="go-ahead" class="slide level2">
+<h1>Go ahead</h1>
+<p>Just add a <em>chunk</em> of R code, wrapped in</p>
+<pre class="Rmd"><code> ```{r}
+ # PUT ARBITRARY R CODE HERE
+ ```</code></pre>
+<div class="fragment">
+<p><strong>Try it!</strong></p>
+</div>
+</section><section class="slide level2">
+
+<pre class="Rmd"><code>Look,
+$$ \lim_{n \to \infty} \sum_{k=0}^n \frac{ (-1)^n }{ 2n+1 } = \frac{\pi}{4} , $$
+see?
+
+ ```{r}
+ cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) )
+ ```</code></pre>
+<div class="fragment">
+<p>Look, <span class="math display">\[ \lim_{n \to \infty} \sum_{k=0}^n \frac{ (-1)^n }{ 2n+1 } = \frac{\pi}{4} , \]</span> see?</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cumsum</span>( -<span class="dv">4</span> *<span class="st"> </span>(-<span class="dv">1</span>)^(<span class="dv">1</span>:<span class="dv">20</span>) /<span class="st"> </span>(<span class="dv">2</span>*(<span class="dv">1</span>:<span class="dv">20</span>)-<span class="dv">1</span>) )</code></pre></div>
+<pre><code>##  [1] 4.000000 2.666667 3.466667 2.895238 3.339683 2.976046 3.283738
+##  [8] 3.017072 3.252366 3.041840 3.232316 3.058403 3.218403 3.070255
+## [15] 3.208186 3.079153 3.200366 3.086080 3.194188 3.091624</code></pre>
+</div>
+</section><section class="slide level2">
+
+<pre class="Rmd"><code> ```{r}
+ plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
+ abline(h=pi, col=&#39;red&#39;)
+ ```</code></pre>
+<div class="fragment">
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(<span class="kw">cumsum</span>( -<span class="dv">4</span> *<span class="st"> </span>(-<span class="dv">1</span>)^(<span class="dv">1</span>:<span class="dv">20</span>) /<span class="st"> </span>(<span class="dv">2</span>*(<span class="dv">1</span>:<span class="dv">20</span>)-<span class="dv">1</span>) ))
+<span class="kw">abline</span>(<span class="dt">h=</span>pi, <span class="dt">col=</span><span class="st">&#39;red&#39;</span>)</code></pre></div>
+<figure>
+<img src="figure/unnamed-chunk-2-1.png" alt="plot of chunk unnamed-chunk-2" /><figcaption>plot of chunk unnamed-chunk-2</figcaption>
+</figure>
+</div>
+</section><section class="slide level2">
+
+<p><strong>Want to omit the ugly code?</strong></p>
+<pre class="Rmd"><code> ```{r, echo=FALSE}
+ plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
+ abline(h=pi, col=&#39;red&#39;)
+ ```</code></pre>
+<div class="fragment">
+<figure>
+<img src="figure/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /><figcaption>plot of chunk unnamed-chunk-3</figcaption>
+</figure>
+</div>
+<div class="fragment">
+<p><strong>but:</strong> leave it in!</p>
+</div>
+</section><section id="whats-going-on" class="slide level2">
+<h1>What's going on</h1>
+<ol type="1">
+<li><p><code>knitr</code> uses a <em>regular expression</em> to find code chunks</p>
+<ul>
+<li>pulls these out,</li>
+<li>evaluates them one at a time</li>
+<li>and inserts &quot;the results&quot; back in</li>
+</ul></li>
+<li><p><code>pandoc</code> renders the resulting markdown file</p>
+<ul>
+<li>with various choices of styling</li>
+</ul></li>
+</ol>
+</section><section id="chunk-options" class="slide level2">
+<h1>Chunk options</h1>
+<p>Name each chunk, and set <a href="http://yihui.name/knitr/options/">options</a> for <a href="http://yihui.name/knitr/demo/output/">what gets printed</a></p>
+<pre class="Rmd"><code> ```{r my_chunk_name, fig.height=4, echo=FALSE}</code></pre>
+<dl>
+<dt><code>echo=(TRUE|FALSE)</code></dt>
+<dd><p>include source code in the output?</p>
+</dd>
+<dt><code>results=&quot;(markup|asis)&quot;</code></dt>
+<dd><p>style the output or not?</p>
+</dd>
+<dt><code>include=(FALSE|TRUE)</code></dt>
+<dd><p>include anything in the output?</p>
+</dd>
+</dl>
+</section><section class="slide level2">
+
+<p>Set document defaults up top:</p>
+<pre class="Rmd"><code> ```{r, include=FALSE}
+ fig.dim &lt;- 5
+ library(knitr)
+ opts_chunk$set(
+        fig.height=fig.dim,
+        fig.width=2*fig.dim,
+        fig.align=&#39;center&#39;
+    )
+ ```</code></pre>
+</section><section id="tables" class="slide level2">
+<h1>Tables</h1>
+<p>One option: use <code>pander</code> + <code>results=&quot;asis&quot;</code>.</p>
+<pre class="Rmd"><code> ```{r results=&quot;asis&quot;}
+ library(pander)
+ bases &lt;- table( sample( c(&quot;A&quot;,&quot;C&quot;,&quot;G&quot;,&quot;T&quot;), 300, replace=TRUE ) )
+ pander(t(bases))
+ ```</code></pre>
+<p><em>note:</em> the transpose <code>t( )</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"> <span class="kw">library</span>(pander)
+ bases &lt;-<span class="st"> </span><span class="kw">table</span>( <span class="kw">sample</span>( <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;G&quot;</span>,<span class="st">&quot;T&quot;</span>), <span class="dv">300</span>, <span class="dt">replace=</span><span class="ot">TRUE</span> ) )
+ <span class="kw">pander</span>(<span class="kw">t</span>(bases))</code></pre></div>
+<table>
+<colgroup>
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+<col style="width: 5%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">C</th>
+<th style="text-align: center;">G</th>
+<th style="text-align: center;">T</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">63</td>
+<td style="text-align: center;">73</td>
+<td style="text-align: center;">74</td>
+<td style="text-align: center;">90</td>
+</tr>
+</tbody>
+</table>
+</section><section id="r-everywhere" class="slide level2">
+<h1>R everywhere</h1>
+<pre class="Rmd"><code>You can 
+`r paste(letters[c(9,14,19,5,18,20)],collapse=&#39;&#39;)` 
+code anywhere.</code></pre>
+<p>You can insert code anywhere.</p>
+</section><section class="slide level2">
+
+<p>Even in the YAML header.</p>
+<p>Go change yours!</p>
+<pre><code>---
+title: My notes
+author: Peter Ralph
+date: `r date()`
+---</code></pre>
+</section></section>
+<section><section id="online-example" class="titleslide slide level1"><h1>Online example</h1></section><section class="slide level2">
+
+<p><strong>Question:</strong> How accurate is inference of the slope of a linear regression, as a function of the sample size?</p>
+<div class="fragment">
+<p>Let's figure it out, by simulation.</p>
+</div>
+<div class="fragment">
+<p>Here is a <a href="linear-regression.html">pre-written solution</a>.</p>
+</div>
+</section><section id="your-turn" class="slide level2">
+<h1>Your turn</h1>
+<p>Download the <a href="https://raw.githubusercontent.com/petrelharp/r-markdown-tutorial/master/examples/iris.tsv">iris dataset</a> to a new directory.</p>
+<p>or just do</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">data</span>(iris)
+<span class="kw">write.table</span>(iris,<span class="dt">file=</span><span class="st">&quot;examples/iris.tsv&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</code></pre></div>
+</section><section class="slide level2">
+
+<ol type="1">
+<li><p>Read in the data.</p></li>
+<li><p>Describe the dataset: number of observations, variables, etcetera.</p>
+<ul>
+<li>inline <code>R</code> code (<code>`r nrow(data)`</code>)</li>
+</ul></li>
+<li><p>Make a table of the number of observations for each species.</p>
+<ul>
+<li><code>results=&quot;asis&quot;</code> and <code>pander()</code></li>
+</ul></li>
+<li><p>Plot the flower dimensions against each other,</p>
+<ul>
+<li>first using <code>pairs()</code>, then</li>
+<li>colored by species.</li>
+</ul></li>
+</ol>
+</section></section>
+<section><section id="templated-reports" class="titleslide slide level1"><h1>Templated reports</h1></section><section class="slide level2">
+
+<p>Set up some fake data:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">dir.create</span>(<span class="st">&quot;examples/thedata&quot;</span>)
+owd &lt;-<span class="st"> </span><span class="kw">setwd</span>(<span class="st">&quot;examples/thedata&quot;</span>)
+for (samp in LETTERS[<span class="dv">1</span>:<span class="dv">10</span>]) {
+    xy &lt;-<span class="st"> </span><span class="kw">data.frame</span>( 
+        <span class="dt">age=</span><span class="kw">exp</span>(<span class="kw">rnorm</span>(<span class="dv">50</span>)),
+        <span class="dt">type=</span><span class="kw">sample</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>],<span class="dv">50</span>,<span class="dt">replace=</span><span class="ot">TRUE</span>)
+    )
+    xy$height &lt;-<span class="st"> </span><span class="dv">5</span> +<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)*xy$age +<span class="st"> </span><span class="dv">3</span>*<span class="kw">runif</span>(<span class="dv">1</span>)*<span class="kw">as.numeric</span>(xy$type) +<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">50</span>)
+    <span class="kw">write.table</span>(xy,<span class="dt">file=</span><span class="kw">paste</span>(samp,<span class="st">&quot;-data.tsv&quot;</span>,<span class="dt">sep=</span><span class="st">&#39;&#39;</span>))
+}
+<span class="kw">setwd</span>(owd)</code></pre></div>
+</section><section class="slide level2">
+
+<p>We now have 10 datasets,<br />
+and would like to <em>visualize</em> each, like:</p>
+<figure>
+<img src="figure/plot_one_data-1.png" alt="plot of chunk plot_one_data" /><figcaption>plot of chunk plot_one_data</figcaption>
+</figure>
+</section><section class="slide level2">
+
+<p><strong>The template:</strong> <code>examples/simple-template.Rmd</code></p>
+<pre class="Rmd"><code> ---
+ title: Visualization for `r input.file`
+ date: `r date()`
+ ---
+
+ ```{r, echo=FALSE}
+ xy &lt;- read.table(input.file)
+ ```
+
+ The file `r input.file` 
+ has `r nrow(xy)` observations:
+
+ ```{r}
+ plot( height ~ age, col=type, data=xy )
+ legend( &quot;topleft&quot;, pch=1, col=1:nlevels(xy$type), 
+    col=1:nlevels(xy$type) )
+ ```</code></pre>
+</section><section class="slide level2">
+
+<p><strong>Render it:</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(knitr)
+owd &lt;-<span class="st"> </span><span class="kw">setwd</span>(<span class="st">&quot;examples/thedata&quot;</span>)  <span class="co"># determines where output will go</span>
+opts_knit$<span class="kw">set</span>(<span class="dt">root.dir=</span><span class="st">&quot;.&quot;</span>)  <span class="co"># determines where code is evaluated</span>
+file.names &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&quot;.&quot;</span>,<span class="st">&quot;.*tsv&quot;</span>)
+for (input.file in file.names) {
+    output.file &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">&quot;.tsv$&quot;</span>,<span class="st">&quot;.viz.html&quot;</span>,input.file)
+    <span class="kw">knit2html</span>(<span class="st">&quot;../simple-template.Rmd&quot;</span>, <span class="dt">output=</span>output.file, <span class="dt">quiet=</span><span class="ot">TRUE</span>)
+}
+<span class="kw">setwd</span>(owd)</code></pre></div>
+</section><section class="slide level2">
+
+<p><strong>Look at them:</strong></p>
+<pre class="Rmd"><code> ```{r make_links, results=&quot;asis&quot;}
+ output.files &lt;- file.path(&quot;examples/thedata&quot;,gsub(&quot;.tsv$&quot;,&quot;.viz.html&quot;,file.names))
+ links &lt;- paste(&quot;[&quot;,file.names,&quot;](&quot;,output.files,&quot;)&quot;,sep=&#39;&#39;)
+ cat( paste(&quot;- &quot;, links, &quot;\n&quot;), &quot;\n&quot; )
+ ```</code></pre>
+<ul>
+<li><a href="examples/thedata/A-data.viz.html">A-data.tsv</a></li>
+<li><a href="examples/thedata/B-data.viz.html">B-data.tsv</a></li>
+<li><a href="examples/thedata/C-data.viz.html">C-data.tsv</a></li>
+<li><a href="examples/thedata/D-data.viz.html">D-data.tsv</a></li>
+<li><a href="examples/thedata/E-data.viz.html">E-data.tsv</a></li>
+<li><a href="examples/thedata/F-data.viz.html">F-data.tsv</a></li>
+<li><a href="examples/thedata/G-data.viz.html">G-data.tsv</a></li>
+<li><a href="examples/thedata/H-data.viz.html">H-data.tsv</a></li>
+<li><a href="examples/thedata/I-data.viz.html">I-data.tsv</a></li>
+<li><a href="examples/thedata/J-data.viz.html">J-data.tsv</a></li>
+</ul>
+</section><section id="another-exercise" class="slide level2">
+<h1>Another exercise</h1>
+<p><strong>Goal:</strong> Compare different <span class="math inline">\(k\)</span> with <span class="math inline">\(k\)</span>-means on the <code>iris</code> dataset.</p>
+<ol type="1">
+<li>Make subdirectories, called <code>iris/k</code>, for <span class="math inline">\(1 \le k \le 5\)</span>.</li>
+<li><p>In each make a file called <code>config.js</code>, using e.g.</p>
+<div class="sourceCode"><pre class="sourceCode R"><code class="sourceCode r"><span class="kw">library</span>(jsonlite)
+<span class="kw">cat</span>(<span class="kw">toJSON</span>(<span class="kw">list</span>(<span class="dt">k=</span><span class="dv">3</span>)),<span class="dt">file=</span><span class="st">&quot;config.json&quot;</span>)</code></pre></div></li>
+<li><p>Make a template that reads <code>config.js</code> (with <code>fromJSON</code>) and then runs <code>kmeans</code> with the appropriate <code>k</code>.</p></li>
+</ol>
+</section></section>
+<section><section id="other-resources" class="titleslide slide level1"><h1>Other resources</h1></section><section class="slide level2">
+
+<ul>
+<li>my <a href="technical-notes.html">technical notes</a> I made while writing this up</li>
+<li><a href="http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html">Karl Broman's</a> intro to Rmarkdown</li>
+<li>the extensive, excellent <a href="http://pandoc.org/README.html">documentation for pandoc</a></li>
+<li><a href="http://stackoverflow.com/questions/tagged/rmarkdown">Stack</a><a href="http://stackoverflow.com/questions/tagged/knitr">Overflow</a></li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available here:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        controls: true,         // Display controls in the bottom right corner
+        progress: true,         // Display a presentation progress bar
+        history: true,          // Push each slide change to the browser history
+        center: true,                       // Vertical centering of slides
+        maxScale: 1.5,                  // Bounds for smallest/largest possible content scale
+        slideNumber: true,                // Display the page number of the current slide
+        theme: 'simple', // available themes are in /css/theme
+        transition: 'none', // default/cube/page/concave/zoom/linear/fade/none
+
+        // Optional libraries used to extend on reveal.js
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } },
+//          { src: 'reveal.js/plugin/search/search.js', async: true, condition: function() { return !!document.body.classList; }, }
+//          { src: 'reveal.js/plugin/remotes/remotes.js', async: true, condition: function() { return !!document.body.classList; } }
+]});
+    </script>
+    </body>
+</html>
