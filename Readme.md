@@ -4,7 +4,7 @@ A quick introduction to R/markdown
 These are notes and materials for a short (2-hour) course on using R/markdown to generate reports
 and dynamic documents.
 
-Here's a link to [the slides](http://petrelharp.github.io/using-rmarkdown.slides.html).
+Here's a link to [the slides](http://petrelharp.github.io/r-markdown-tutorial/using-rmarkdown.slides.html).
 
 
 Outline
