@@ -1,10 +1,16 @@
 PANDOC_OPTS = --mathjax=/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML --standalone
+# knitr by default tries to interpret ANY code chunk; I only want it to do the ones beginning with ```r.
+KNITR_PATTERNS = list( chunk.begin="^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$", chunk.end="^```+\\s*$$", inline.code="`r +([^`]+)\\s*`")
+
+%.html : %.Rmd
+	# cd $$(dirname $<); Rscript -e 'knitr::knit2html(basename("$<"),output=basename("$@"))'
+	cd $$(dirname $<); Rscript -e 'rmarkdown::render(basename("$<"),output_file=basename("$@"))'
 
 %.html : %.md
 	pandoc -o $@ $(PANDOC_OPTS) $<
 
 %.md : %.Rmd
-	cd $$(dirname $<); Rscript -e 'knitr::knit(basename("$<"),output=basename("$@"))'
+	cd $$(dirname $<); Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); knitr::knit(basename("$<"),output=basename("$@"))'
 
 ## VARIOUS SLIDE METHODS
 REVEALJS_OPTS = -t revealjs -V theme=moon

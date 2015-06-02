@@ -383,9 +383,9 @@ Go ahead
 Just add a *chunk* of R code, wrapped in
 
 `````{.Rmd}
-```{r}
-# PUT ARBITRARY R CODE HERE
-```
+ ```{r}
+ # PUT ARBITRARY R CODE HERE
+ ```
 `````
 
 . . .
@@ -395,42 +395,48 @@ Just add a *chunk* of R code, wrapped in
 ----------
 
 `````{.Rmd}
-```{r}
-sqrt(cumsum(6/(1:20)^2))
-```
+ ```{r}
+ cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) )
+ ```
 `````
 
+**produces**
+
 ```{r}
-sqrt(cumsum(6/(1:20)^2))
+cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) )
 ```
 
 --------
 
 `````{.Rmd}
-```{r}
-plot(sqrt(cumsum(6/(1:20)^2)))
-abline(h=pi)
-```
+ ```{r}
+ plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
+ abline(h=pi, col='red')
+ ```
 `````
 
-```{r}
-plot(sqrt(cumsum(6/(1:20)^2)))
-abline(h=pi)
+**produces**
+
+```{r, fig.height=3.5}
+plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
+abline(h=pi, col='red')
 ```
 
 Show only the results:
 ----------------------
 
 `````{.Rmd}
-```{r }
-plot(sqrt(cumsum(6/(1:20)^2)))
-abline(h=pi)
-```
+ ```{r, echo=FALSE}
+ plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
+ abline(h=pi, col='red')
+ ```
 `````
 
-```{r}
-plot(sqrt(cumsum(6/(1:20)^2)))
-abline(h=pi)
+**produces**
+
+```{r, echo=FALSE, fig.height=3.5}
+plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
+abline(h=pi, col='red')
 ```
 
 
@@ -441,9 +447,9 @@ Add a name to each chunk,
 and set [chunk options](http://yihui.name/knitr/options/)
 
 `````{.Rmd}
-```{r setup, fig.height=4}
-# (PLOT SOMETHING)
-```
+ ```{r setup, fig.height=4}
+ # (PLOT SOMETHING)
+ ```
 `````
 
 These must be *valid R expressions*.
@@ -470,40 +476,51 @@ Some options
 Set them globally up top as so:
 
 ```````{.Rmd}
-```{r, include=FALSE}
-fig.dim <- 5
-opts_chunk$set(fig.height=fig.dim,fig.width=2*fig.dim,fig.align='center')
-```
+ ```{r, include=FALSE}
+ fig.dim <- 5
+ library(knitr)
+ opts_chunk$set(
+        fig.height=fig.dim,
+        fig.width=2*fig.dim,
+        fig.align='center'
+    )
+ ```
 ```````
 
 
 Tables
 ------
 
-One option: use `xtable` + `results="asis"`.
+One option: use `pander` + `results="asis"`.
 
 ```````{.Rmd}
-```{r results="asis"}
-library(xtable)
-dtab <- xtable( table( sample( letters, 300, replace=TRUE ) ) )
-print(dtab,type='html')
-```
+ ```{r results="asis"}
+ library(pander)
+ bases <- table( sample( c("A","C","G","T"), 300, replace=TRUE ) )
+ pander(t(bases))
+ ```
 ```````
 
+*note:* the transpose `t( )`
+
 ```{r results="asis"}
-library(xtable)
-dtab <- xtable( table( sample( letters, 300, replace=TRUE ) ) )
-print(dtab,type='html')
+ library(pander)
+ bases <- table( sample( c("A","C","G","T"), 300, replace=TRUE ) )
+ pander(t(bases))
 ```
 
 
 R everywhere
 ------------
 
-You can `r paste(c(letters," ")[c( 9,14,19,5,18,20,27,3,15,4,5,27,1,14,25,23,8,5,18,5 )],collapse='')`.
+You can 
+`r paste(letters[c(9,14,19,5,18,20)],collapse='')` 
+code anywhere.
 
 `````{.Rmd}
-You can `r paste(c(letters," ")[c( 9,14,19,5,18,20,27,3,15,4,5,27,1,14,25,23,8,5,18,5 )],collapse='')`.
+You can 
+``r "r"` paste(letters[c(9,14,19,5,18,20)],collapse='')` 
+code anywhere.
 `````
 
 --------------
@@ -515,148 +532,132 @@ Go change yours!
     ---
     title: My notes
     author: Peter Ralph
-    date: `r date()`
+    date: ``r "r"` date()`
     ---
 
 
+Online example
+==============
 
+--------------
 
-Other resources
----------------
-
- -  [Karl Broman's](http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html) intro to Rmarkdown
- -  the extensive, excellent [documentation for pandoc](http://pandoc.org/README.html)
-
-
-Technical notes:
-================
-
-
-General
--------
-
-*  `-o (output file name)` : where to put output
-*  `--standalone` : produces a standalone document, not a code fragment (using one of [these](https://github.com/jgm/pandoc-templates) [templates](http://pandoc.org/README.html#templates))
-*  `--from=(format name)[+/-(extension name)]` : what to write out to (defaults to html) and optional turning on/off of various behavior, [listed here](http://pandoc.org/README.html#pandocs-markdown)
-*  `--include-in-header=(file name)` : at the end of the header, e.g. css, javascript, `\newcommand`, etc. (but see `--css`)
-*  `--include-before-body=(file name)` : at the beginning of the body, e.g. navigation bars, `\maketitle`, etc.
-
-
-For presentations
------------------
-
-See [the documentation](http://pandoc.org/README.html#producing-slide-shows-with-pandoc)
-
-*  `--self-contained` : everything in one file (but see `--mathjax`)
-*  `--mathjax[=URL]` : points to the `MathJax.js` script, *incompatible* with `--selfcontained`
-*  `--variable=KEY[:VAL]` : assign template variable KEY to VAL, for instance:
-
-    *  `theme` : for beamer or reveal.js presentations
-    *  but note these can be also [set in metadata](http://tex.stackexchange.com/questions/139139/adding-headers-and-footers-using-pandoc/139205#139205)
-
-*  `--incremental` : step through lists
-*  `--slide-level` : headers above this level create sections; below this create slides.
-*  `--css=(URL)` : include the css linked to
-
-
-Options for rendering using R
------------------------------
-
--  `markdown::markdownToHTML( )` : lightweight but does some styling
-
-    -  used by `knitr::knit2html()`
-    -  automatically includes mathjax
-
--  `knitr::knit2html( )` : calls `markdown::markdownToHTML( )`, almost identical
-
--  `pander::Pandoc.convert( )` : looks quite nice, brings in jquery and others
-
-    -  `pander` is an entire schema to translate `R` objects *to markdown*
-    -  imports a bunch of javascript and css
-
--  `rmarkdown::render( )` : high-level, does everything, has a nice template.
-
-    -  processes YAML header
-    -  knits if necessary
-    -  is what `Rstudio` relies on, which comes bundled with a binary for pandoc.
-
-
-Other technicalities
---------------------
-
-* **indentation** : one tab (four spaces) indicates a code block *except* within lists
-
-* **header attributes** can be specified by appending `{#identifier .class .class key=value key=value}` afterwards
-
-    * e.g. `{# foo .unnumbered}` makes a section that can be linked to with `[link to foo](#foo)` and is unnumbered
-    * but sections without identifiers will be assigned ones automatically 
-
-
-
-Other notes on making slides
-----------------------------
-
-A paragraph with three dots:
-```
+**Question:** 
+How accurate is inference of the slope of a linear regression,
+as a function of the sample size?
 
 . . .
 
+Let's figure it out, by simulation.
+
+. . .
+
+Here is a [pre-written solution](linear-regression.html).
+
+
+Your turn
+---------
+
+
+
+Templated reports
+=================
+
+-----------------
+
+**Do this** to set up some fake data:
+
+```{r make_data}
+dir.create("examples/thedata")
+owd <- setwd("examples/thedata")
+for (samp in LETTERS[1:10]) {
+    xy <- data.frame( 
+        age=exp(rnorm(50)),
+        type=sample(letters[1:3],50,replace=TRUE)
+    )
+    xy$height <- 5 + runif(1)*xy$age + 3*runif(1)*as.numeric(xy$type) + rnorm(50)
+    write.table(xy,file=paste(samp,"-data.tsv",sep=''))
+}
+setwd(owd)
 ```
 
-makes a pause.
+------------------
+
+We now have 26 datasets, \
+and would like to *visualize* each, 
+like:
+
+```{r plot_one_data, echo=FALSE}
+xy <- data.frame( 
+    age=exp(rnorm(50)),
+    type=sample(letters[1:3],50,replace=TRUE)
+)
+xy$height <- 5 + runif(1)*xy$age + 3*runif(1)*as.numeric(xy$type) + rnorm(50)/3
+with(xy, plot( height ~ age, col=type ) )
+legend( "topleft", pch=1, legend=levels(xy$type), col=1:nlevels(xy$type) )
+```
 
 
-About math rendering
---------------------
+---------------------
 
-There are [many options](http://pandoc.org/README.html#math),
-but probably `--mathjax` is the best?
+**The template:** `examples/simple-template.Rmd`
 
-Note that it is supposed to render as far as possible with unicode,
-but this m$\alpha$y depend on the proper fonts being installed?
+``````{.Rmd}
+ ---
+ title: Visualization for ``r "r"` input.file`
+ date: ``r "r"` date()`
+ ---
+
+ ```{r, echo=FALSE}
+ xy <- read.table(input.file)
+ ```
+
+ The file ``r "r"` input.file` 
+ has ``r "r"` nrow(xy)` observations:
+
+ ```{r}
+ plot( height ~ age, col=type, data=xy )
+ legend( "topleft", pch=1, col=1:nlevels(xy$type), 
+    col=1:nlevels(xy$type) )
+ ```
+``````
+
+-----------------------
+
+**Render it:**
+
+```{r, results="hide"}
+library(knitr)
+owd <- setwd("examples/thedata")  # determines where output will go
+opts_knit$set(root.dir=".")  # determines where code is evaluated
+file.names <- list.files(".",".*tsv")
+for (input.file in file.names) {
+    output.file <- gsub(".tsv$",".viz.html",input.file)
+    knit2html("../simple-template.Rmd", output=output.file)
+}
+setwd(owd)
+```
 
 
+-------------------------
 
-Other types of text: line blocks
---------------------------------
+**Look at them:**
 
-These are just markdown except it pays attention to linebreaks.
-
-    | Molecular & Computational Biology
-    | University of Southern California
-    | 1050 Child Way, RRI 201 (MCB)
-    | Los Angeles, CA 90089-2910
-
-**produces**
-
-| Molecular & Computational Biology
-| University of Southern California
-| 1050 Child Way, RRI 201 (MCB)
-| Los Angeles, CA 90089-2910
+```{r make_links, results="asis"}
+output.files <- file.path("examples/thedata",gsub(".tsv$",".viz.html",file.names))
+links <- paste("[",file.names,"](",output.files,")",sep='')
+cat( paste("- ", links, "\n"), "\n" )
+```
 
 
-Other types of text: definition lists
--------------------------------------
-
-To make a **definition list** 
-
-:  Each term must fit on one line, which may optionally be followed by a blank line, 
-    and must be followed by one or more definitions. 
-    A definition begins with a colon or tilde, which may be indented one or two spaces.
-
-    A term may have multiple definitions, and each definition may consist of one or more block elements (paragraph, code block, list, etc.), each indented four spaces or one tab stop. The body of the definition (including the first line, aside from the colon or tilde) should be indented four spaces.
+Other resources
+===============
 
 
-Self-contained documents
-------------------------
+---------------
 
-HTML documents can stitch together lots of different pieces: images, css, javascript, etcetera.  These are *not* nice to email.
+ *  my [technical notes](technical-notes.html) I made while writing this up
+ -  [Karl Broman's](http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html) intro to Rmarkdown
+ -  the extensive, excellent [documentation for pandoc](http://pandoc.org/README.html)
+ -  [StackOverflow](http://stackoverflow.com/)
 
-*But:* `pandoc` can produce *self-contained* documents, that are email-ready.
-`rmarkdown` does this by default.
 
-*Warning:* the best way of displaying math relies on [mathjax](http://mathjax.org),
-which is a "large" javascript library,
-and is *not* included. 
-If you use LaTeX math,
-you need to host a local copy of mathjax.

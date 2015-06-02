@@ -33,8 +33,8 @@ Outline
 
     * what [knitr](http://yihui.name/knitr/) does
     * code chunks
-    * tables
     * figures
+    * tables
     * chunk options
     * inline `R`
     * rmarkdown and rstudio
@@ -42,7 +42,7 @@ Outline
 4.  One report, many documents: a working example
 
     * one subdirectory per dataset
-    * json configuration + simulated ata
+    * json configuration + simulated data
     * external variables with knitr
     * using `Rscript` instead
 

@@ -1,0 +1,132 @@
+---
+title: Linear regression and sample size
+author: Peter Ralph
+date: "`r date()`"
+---
+
+```{r setup, include=FALSE}
+fig.dim <- 5
+library(knitr)
+library(colorspace) # for adjustcolor
+opts_chunk$set(
+    fig.height=fig.dim,
+    fig.width=fig.dim,
+    fig.align='center'
+)
+```
+
+We'd like to know how accurately we can estimate
+the slope of a linear relationship
+as a function of sample size.
+
+Oh, and we're stuck on a desert island with no internet access
+or statistics books
+and we forgot all our math.
+
+So, let's find out by simulation!
+
+
+One data set
+------------
+
+Let's simulate some samples,
+fit a linear model,
+and make a plot
+just to check everything looks right.
+
+
+Simulated data:
+
+```{r sim_first}
+n <- 10
+slope <- 0.2
+noise.sd <- 0.25
+xy <- data.frame( x=rnorm(n))
+xy$y <- xy$x * slope + noise.sd*rnorm(n)
+summary(xy)
+```
+
+Now, fit a linear model:
+
+```{r fit_model}
+xy.lm <- lm( y ~ x, data=xy )
+summary(xy.lm)
+```
+
+Look at the results:
+
+```{r first_plot}
+plot( y ~ x, data=xy )
+abline(coef(xy.lm),col='red')
+```
+
+
+Many data sets:
+---------------
+
+We'd like to do the above many times for a given sample size.
+
+
+```{r sim_many, fig.width=2*fig.dim}
+n <- 10
+slope <- 0.2
+noise.sd <- 0.25
+nreps <- 1000
+many.lms <- replicate( nreps, {
+        xy <- data.frame( x=rnorm(n))
+        xy$y <- xy$x * slope + noise.sd*rnorm(n)
+        xy.lm <- lm( y ~ x, data=xy )
+        return( coef(xy.lm) )
+    } )
+# hist the intercept and slope
+layout(t(1:2))
+hist( many.lms[1,], main="intercept" )
+hist( many.lms[2,], main="slope" )
+```
+
+Let's just look at a bunch of those lines, for fun:
+
+```{r many_lines}
+plot(0,type='n',xlab='',ylab='',xlim=c(-1,1),ylim=c(-1,1))
+for (k in 1:100) {
+    abline( many.lms[1,k], many.lms[2,k], col=adjustcolor("black",0.1) )
+}
+```
+
+
+Systematic comparison
+---------------------
+
+First thing: *make a function*.
+
+```{r setup_sims}
+sim.many.lms <- function (n, nreps=1000) {
+    many.lms <- replicate( nreps, {
+            xy <- data.frame( x=rnorm(n))
+            xy$y <- xy$x * slope + noise.sd*rnorm(n)
+            xy.lm <- lm( y ~ x, data=xy )
+            return( coef(xy.lm) )
+        } )
+}
+```
+
+Now, apply it to the sample sizes of interest:
+
+```{r run_sims, cache=TRUE}
+n.vals <- floor(seq(10,500,length.out=10))
+sim.lms <- lapply( n.vals, sim.many.lms )
+```
+```{r plot_sims, fig.width=2*fig.dim}
+layout(t(1:2))
+for (k in seq_along(n.vals)) {
+    hist(sim.lms[[k]][1,], main=paste("intercepts, n=",n.vals[k]))
+    hist(sim.lms[[k]][2,], main=paste("slopes, n=",n.vals[k]))
+}
+```
+
+OK, let's summarize the results on slope:
+```{r show_slope, fig.width=2*fig.dim}
+layout(t(1:2))
+boxplot( lapply( sim.lms, function (x) x[2,] ), names=n.vals )
+plot(n.vals, sapply( sim.lms, function (x) sd(x[2,]) ), ylab="SD of slope" )
+```
