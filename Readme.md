@@ -7,6 +7,7 @@ and dynamic documents.
 Here's a link to [the slides](http://petrelharp.github.io/r-markdown-tutorial/using-rmarkdown.slides.html).
 
 
+
 Outline
 -------
 
@@ -50,8 +51,45 @@ Outline
 
 
 
+Compiling the presentation yourself
+-----------------------------------
+
+
+The presentation uses [reveal.js](http://lab.hakim.se/reveal-js/).
+You can get this repository along with reveal.js like so:
+
+````{.sh}
+git clone https://github.com/petrelharp/r-markdown-tutorial.git
+cd r-markdown-turoial
+git submodule init && git submodule update
+````
+
+With an up-to-date version of pandoc, R, and knitr,
+you should be able to compile the presentation like so:
+
+````{.sh}
+make using-rmarkdown.slides.html
+````
+
+Since I give presentations sometimes not on the internet,
+this by default relies on a local installation of MathJax,
+so unless you've installed this on Debian/Ubuntu (`aptitude install libjs-mathjax`),
+to view tha maths properly you need to change the location in the Makefile.
+
+The presentation will not render in Rstudio because:
+by default, `knitr` tries to process all code blocks;
+so to have example code in the document you have to munge your own code.
+To keep my document processable by just pandoc, and prettier
+(except the inline code)
+I am rendering the presentation after modifying the regular expression knitr uses
+to identify code chunks to require exactly three backticks,
+at the start of the line, and the identifier `r`
+(by default it is much more lax).
+See the Makefile for how this is done.
+
+
 Notes on setting up to build the *presentation*
----------------------------------------------
+----------------------------------------------
 
 There are various [styles of presentation](http://pandoc.org/README.html#producing-slide-shows-with-pandoc) available.
 

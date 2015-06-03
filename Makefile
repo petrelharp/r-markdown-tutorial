@@ -1,4 +1,13 @@
-PANDOC_OPTS = --mathjax=/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML --standalone
+.PHONY : all
+
+all : using-rmarkdown.slides.html Readme.html 
+
+# change this to the location of your local MathJax.js library
+MATHJAX = /usr/share/javascript/mathjax/MathJax.js
+# or uncomment this line to use a remote one
+# MATHJAX = https://cdn.mathjax.org/mathjax/latest/MathJax.js
+
+PANDOC_OPTS = --mathjax=$(MATHJAX)?config=TeX-AMS-MML_HTMLorMML --standalone
 # knitr by default tries to interpret ANY code chunk; I only want it to do the ones beginning with ```r.
 KNITR_PATTERNS = list( chunk.begin="^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$", chunk.end="^```+\\s*$$", inline.code="`r +([^`]+)\\s*`")
 
@@ -10,6 +19,9 @@ KNITR_PATTERNS = list( chunk.begin="^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$", ch
 	pandoc -o $@ $(PANDOC_OPTS) $<
 
 %.md : %.Rmd
+	cd $$(dirname $<); Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); knitr::knit(basename("$<"),output=basename("$@"))'
+
+using-rmarkdown.md : using-rmarkdown.Rmd
 	cd $$(dirname $<); Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); knitr::knit(basename("$<"),output=basename("$@"))'
 
 ## VARIOUS SLIDE METHODS
