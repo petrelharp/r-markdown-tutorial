@@ -1,6 +1,6 @@
 .PHONY : all
 
-all : using-rmarkdown.slides.html Readme.html 
+all : using-rmarkdown.slides.html Readme.html technical-notes.html
 
 # change this to the location of your local MathJax.js library
 MATHJAX = /usr/share/javascript/mathjax/MathJax.js

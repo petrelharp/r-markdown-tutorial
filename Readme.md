@@ -5,7 +5,8 @@ These are notes and materials for a short (2-hour) course on using R/markdown to
 and dynamic documents.
 
 Here's a link to [the slides](http://petrelharp.github.io/r-markdown-tutorial/using-rmarkdown.slides.html).
-
+Also, here are some [technical notes](http://petrelharp.github.io/r-markdown-tutorial/technical-notes.html)
+on getting pandoc, R+markdown, and this presentation to work.
 
 
 Outline
