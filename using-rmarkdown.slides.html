@@ -420,8 +420,8 @@ see?
  ```</code></pre>
 </section><section id="tables" class="slide level2">
 <h1>Tables</h1>
-<p>One option: use <code>pander</code> + <code>results=&quot;asis&quot;</code>.</p>
-<pre class="Rmd"><code> ```{r results=&quot;asis&quot;}
+<p>One option: use <code>pander</code>.</p>
+<pre class="Rmd"><code> ```{r}
  library(pander)
  bases &lt;- table( sample( c(&quot;A&quot;,&quot;C&quot;,&quot;G&quot;,&quot;T&quot;), 300, replace=TRUE ) )
  pander(t(bases))
@@ -447,10 +447,10 @@ see?
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">67</td>
-<td style="text-align: center;">72</td>
-<td style="text-align: center;">94</td>
-<td style="text-align: center;">67</td>
+<td style="text-align: center;">82</td>
+<td style="text-align: center;">74</td>
+<td style="text-align: center;">75</td>
+<td style="text-align: center;">69</td>
 </tr>
 </tbody>
 </table>
@@ -495,7 +495,8 @@ date: `r date()`
 </ul></li>
 <li><p>Make a table of the number of observations for each species.</p>
 <ul>
-<li><code>results=&quot;asis&quot;</code> and <code>pander()</code></li>
+<li><code>pander()</code></li>
+<li>or <code>results=&quot;asis&quot;</code> and <code>print.xtable(xtable(),type='html')</code></li>
 </ul></li>
 <li><p>Plot the flower dimensions against each other,</p>
 <ul>

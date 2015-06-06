@@ -1,4 +1,4 @@
-.PHONY : all
+.PHONY : all publish
 
 all : using-rmarkdown.slides.html using-rmarkdown.html Readme.html technical-notes.html
 

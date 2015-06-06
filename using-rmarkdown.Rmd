@@ -518,10 +518,10 @@ Set document defaults up top:
 Tables
 ------
 
-One option: use `pander` + `results="asis"`.
+One option: use `pander`.
 
 ```````{.Rmd}
- ```{r results="asis"}
+ ```{r}
  library(pander)
  bases <- table( sample( c("A","C","G","T"), 300, replace=TRUE ) )
  pander(t(bases))
@@ -530,7 +530,7 @@ One option: use `pander` + `results="asis"`.
 
 *note:* the transpose `t( )`
 
-```{r results="asis"}
+```{r}
  library(pander)
  bases <- table( sample( c("A","C","G","T"), 300, replace=TRUE ) )
  pander(t(bases))
@@ -606,7 +606,8 @@ write.table(iris,file="examples/iris.tsv",sep="\t")
 
 3.  Make a table of the number of observations for each species.
 
-    * `results="asis"` and `pander()`
+    * `pander()`
+    * or `results="asis"` and `print.xtable(xtable(),type='html')`
 
 4.  Plot the flower dimensions against each other,
 
