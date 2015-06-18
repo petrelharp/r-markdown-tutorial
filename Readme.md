@@ -72,6 +72,13 @@ you should be able to compile the presentation like so:
 make using-rmarkdown.slides.html
 ````
 
+*Note:* OSX, for some reason, passes strings through make differently, so you need to uncomment a line in the Makefile, so it looks like this:
+```
+# or, uncomment for OSX:
+KNITR_PATTERNS = list( chunk.begin="^```+\\\\s*\\\\{[.]?(r[a-zA-Z]*.*)\\\\}\\\\s*$$", chunk.end="^```+\\\\s*$$", inline.code="`r +([^`]+)\\\\s*`")
+```
+(the only difference is an extra level of escaping the slashes).
+
 Since I give presentations sometimes not on the internet,
 this by default relies on a local installation of MathJax,
 so unless you've installed this on Debian/Ubuntu (`aptitude install libjs-mathjax`),
