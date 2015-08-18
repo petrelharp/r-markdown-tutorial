@@ -10,6 +10,8 @@ MATHJAX = /usr/share/javascript/mathjax/MathJax.js
 PANDOC_OPTS = --mathjax=$(MATHJAX)?config=TeX-AMS-MML_HTMLorMML --standalone
 # knitr by default tries to interpret ANY code chunk; I only want it to do the ones beginning with ```r.
 KNITR_PATTERNS = list( chunk.begin="^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$", chunk.end="^```+\\s*$$", inline.code="`r +([^`]+)\\s*`")
+# or, uncomment for OSX:
+# KNITR_PATTERNS = list( chunk.begin="^```+\\\\s*\\\\{[.]?(r[a-zA-Z]*.*)\\\\}\\\\s*$$", chunk.end="^```+\\\\s*$$", inline.code="`r +([^`]+)\\\\s*`")
 
 %.html : %.Rmd
 	# cd $$(dirname $<); Rscript -e 'knitr::knit2html(basename("$<"),output=basename("$@"))'
