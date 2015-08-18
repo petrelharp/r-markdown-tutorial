@@ -189,7 +189,7 @@ in templates.
 
 
 *Note:* some people try to call `setwd()` within their `.Rmd` file. But,
-`knitr` resets this for each chunk (and, chastizes you!).
+`knitr` resets this for each chunk (and, chastises you!).
 
 
 knitr and for loops
@@ -210,6 +210,59 @@ One option: use `xtable` + `results="asis"`.
  print(dtab,type='html')
  ```
 `````
+
+More on templates
+=================
+
+Currently (8/17/2015), rmarkdown's `render` function [**cannot** be used](https://github.com/rstudio/rmarkdown/issues/499) for templates
+that might be compiled at the same time with different data.
+There is no workaround.
+This is too bad, because render parses the YAML header,
+and makes the resulting html look nice.
+Let's look under the hood to see how to replicate it.
+Here's the call to `pandoc`:
+
+`pandoc`:
+* `+RTS -K512m -RTS` : this increases pandoc's stack space
+* `test2.utf8.md` : the input file
+* `--to html` : the output format
+* `--from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash-implicit_figures` : the input format
+    * `+autolink_bare_uris` : Makes all absolute URIs into links.
+    * `+ascii_identifiers` : Causes the identifiers produced by auto_identifiers to be pure ASCII.
+    * `+tex_math_single_backslash` : Causes `\(\)` and `\[\]` to be displayed as math.
+    * `-implicit_figures` : An image occurring by itself in a paragraph will be rendered as a figure with a caption.
+* `--output one/one.html` : output file
+* `--smart` : curly quotes, em and en dashes, and ellipses.
+* `--email-obfuscation none`
+* `--self-contained --standalone`
+* `--section-divs` : Wrap sections in `<div>` tags.
+* `--template /usr/local/lib/R/site-library/rmarkdown/rmd/h/default.html` : rmarkdown's template
+* `--variable 'theme:bootstrap'` : variable to the template
+* `--include-in-header /tmp/RtmpLnM0EY/rmarkdown-str65b85d06d7aa.html` : this does various things:
+    * `<script src="/usr/local/lib/R/site-library/rmarkdown/rmd/h/jquery-1.11.0/jquery.min.js"></script>`
+    * `<meta name="viewport" content="width=device-width, initial-scale=1" />`
+    * `<script src="/usr/local/lib/R/site-library/rmarkdown/rmd/h/bootstrap-3.3.1/js/bootstrap.min.js"></script>`
+    * `<script src="/usr/local/lib/R/site-library/rmarkdown/rmd/h/bootstrap-3.3.1/shim/html5shiv.min.js"></script>`
+    * `<script src="/usr/local/lib/R/site-library/rmarkdown/rmd/h/bootstrap-3.3.1/shim/respond.min.js"></script>`
+    * and includes [normalize.css](https://necolas.github.io/normalize.css/3.0.2/normalize.css)
+* `--mathjax --variable 'mathjax-url:https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'` : The template inserts mathjax itself.
+* `--no-highlight --variable highlightjs=/usr/local/lib/R/site-library/rmarkdown/rmd/h/highlight` : Turn off pandoc highlighting and tell the template to do the highlighting.
+
+We can trim this down to 
+```
+MATHJAX=/usr/share/javascript/mathjax/MathJax.js  # for local mathjax
+PANDOC_OPTS="--to html --from markdown-implicit_figures \\
+    --standalone --self-contained --section-divs --template template.html \\
+    --variable 'theme:bootstrap' --include-in-header resources/header-scripts.html \\
+    --mathjax --variable mathjax-url:$MATHJAX?config=TeX-AMS-MML_HTMLorMML'"
+```
+
+So, now to turn `input.Rmd` into `output.html`, in a safe way,
+we can run
+```
+R --vanilla -e 'knitr::knit("input.Rmd",output="output.md")'
+pandoc output.md ${PANDOC_OPTS} --output output.html
+```
 
 
 Formatting and layout

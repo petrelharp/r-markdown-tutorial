@@ -75,7 +75,7 @@ make using-rmarkdown.slides.html
 Since I give presentations sometimes not on the internet,
 this by default relies on a local installation of MathJax,
 so unless you've installed this on Debian/Ubuntu (`aptitude install libjs-mathjax`),
-to view tha maths properly you need to change the location in the Makefile.
+to view the maths properly you need to change the location in the Makefile.
 
 The presentation will not render in Rstudio because:
 by default, `knitr` tries to process all code blocks;
