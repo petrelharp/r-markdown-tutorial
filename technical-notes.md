@@ -288,6 +288,7 @@ Let's look under the hood to see how to replicate it.
 Here's the call to `pandoc`:
 
 `pandoc`:
+
 * `+RTS -K512m -RTS` : this increases pandoc's stack space
 * `test2.utf8.md` : the input file
 * `--to html` : the output format
@@ -323,7 +324,8 @@ PANDOC_OPTS="--to html --from markdown-implicit_figures \\
 ```
 
 So, now to turn `input.Rmd` into `output.html`, in a safe way,
-we can run
+we need to get the header-scripts file and then
+run
 ```
 R --vanilla -e 'knitr::knit("input.Rmd",output="output.md")'
 pandoc output.md ${PANDOC_OPTS} --output output.html
