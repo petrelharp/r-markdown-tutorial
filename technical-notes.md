@@ -4,6 +4,71 @@ date: June 2, 2015
 title: Technical notes
 ---
 
+Gotchas
+=======
+
+These things were confusing to me for a while.
+They might be to others also.
+More general notes are below.
+
+How to format $\LaTeX$ for pandoc
+-------------------------------
+
+There are a lot of different ways to enter math in LaTeX already,
+and there's more when using pandoc.
+This is kinda nice for the newcomer to LaTeX, since it's more forgiving,
+but if you want to produce *both* html and pdf output, you have to do it just right.
+For html output, it seems safe to just wrap everything in \$\$s;
+but this breaks when passed to pdflatex.
+The solution: *don't* do it.
+
+- If you are producing pdf, pandoc will pass your LaTeX directly to pdflatex;
+    so your code needs to be valid there.
+- If you are producing html, pandoc [includes raw LaTeX blocks if --mathjax is specified](https://github.com/jgm/pandoc/commit/4f0c5c30809f09bd700cd47035f86a3db1c64669),
+    so you can go ahead and use \\align environments and everything.
+- Definitions (\\newcommand, etc) go at the top of the file, after the YAML header.
+
+For instance, this file:
+
+~~~~~~~~~~~
+\newcommand{\R}{\mathbb{R}}
+
+This is for $\R$eal.
+\begin{align}
+    e^{i\pi} = -1
+\end{align}
+~~~~~~~~~~~
+
+compiles just fine with
+
+~~~~~~~~~~
+pandoc test.md -o test.pdf
+pandoc test.md --standalone --mathjax -o test.html
+~~~~~~~~~~
+
+
+Do *not* use `rmarkdown` to produce templated reports
+-------------------------------------------------
+
+It's nice and convenient to turn your `.Rmd` files into html using `rmarkdown`'s function `render()`.
+And, R+markdown is a great way to produce templated reports:
+write one .Rmd file; apply it to many datasets of the same structure.
+**But**, as I discovered the hard way,
+if you call, say, 
+`render("template.Rmd",output_file="a.html")` 
+and
+`render("template.Rmd",output_file="b.html")` 
+at the same time in different R sessions,
+with different variables,
+you won't get different reports,
+you'll get the same one twice, silently.
+As far as I can tell, there's [no workaround](https://github.com/rstudio/rmarkdown/issues/499)
+with rmarkdown;
+the way to do it is to call `knitr` and `pandoc` yourself
+(which is what rmarkdown does under the hood anyhow).
+
+
+
 pandoc invocation
 =================
 
