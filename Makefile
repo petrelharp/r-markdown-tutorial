@@ -1,13 +1,27 @@
+SHELL := /bin/bash
+# use bash for <( ) syntax
+
 .PHONY : all publish
 
 all : using-rmarkdown.slides.html using-rmarkdown.html Readme.html technical-notes.html
 
 # change this to the location of your local MathJax.js library
-MATHJAX = /usr/share/javascript/mathjax/MathJax.js
-# or uncomment this line to use a remote one
-# MATHJAX = https://cdn.mathjax.org/mathjax/latest/MathJax.js
+LOCAL_MATHJAX = /usr/share/javascript/mathjax/MathJax.js
+ifeq ($(wildcard $(LOCAL_MATHJAX)),)
+	MATHJAX = https://cdn.mathjax.org/mathjax/latest/MathJax.js
+else
+	MATHJAX = $(LOCAL_MATHJAX)
+endif
 
 PANDOC_OPTS = --mathjax=$(MATHJAX)?config=TeX-AMS-MML_HTMLorMML --standalone
+# optionally add in a latex file with macros
+MACROS_FILE = macros.tex
+ifeq ($(wildcard $(MACROS_FILE)),)
+	# macros file isn't there
+else
+	PANDOC_OPTS += -H <(echo '\['; cat $(MACROS_FILE); echo '\]')
+endif
+
 # knitr by default tries to interpret ANY code chunk; I only want it to do the ones beginning with ```r.
 KNITR_PATTERNS = list( chunk.begin="^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$", chunk.end="^```+\\s*$$", inline.code="`r +([^`]+)\\s*`")
 # or, uncomment for OSX:

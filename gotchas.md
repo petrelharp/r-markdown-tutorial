@@ -23,7 +23,7 @@ The solution, at least for now, is to use `\aligned` instead of `\align`:
     so your code needs to be valid there.
 - If you are producing html, pandoc [includes raw LaTeX blocks if --mathjax is specified](https://github.com/jgm/pandoc/commit/4f0c5c30809f09bd700cd47035f86a3db1c64669),
     so you can go ahead and use \\align environments and everything.
-- Definitions (\\newcommand, etc) go at the top of the file, after the YAML header.
+- Definitions (\\newcommand, etc) go at the top of the file, after the YAML header (but see below).
 
 For instance, this file:
 
@@ -42,6 +42,22 @@ compiles just fine both with
 pandoc test.md -o test.pdf
 pandoc test.md --standalone --mathjax -o test.html
 ~~~~~~~~~~
+
+How to robustly define macros that work for both pdf and html
+-------------------------------------------------------------
+
+The macros in the above example get expanded because all the math is in simple math environments.
+If you want to use ams environments like `\begin{align}`, then there's 
+[no way to include macros](https://github.com/jgm/pandoc/issues/2382) directly in the document that works for both html and pdf output.
+One nice way around this is to keep your macros in a separate file which is passed to pandoc by a variable,
+and insert them in the header using the `-H` flag;
+you just have to make sure to wrap them in a math environment for mathjax to use them:
+```
+# for pdf
+pandoc test.md -H macros.tex -o test.pdf
+# for html
+pandoc test.md -H <(echo '\['; cat macros.tex; echo '\]') --mathjax --standalone -o test.html
+```
 
 
 

@@ -4,6 +4,9 @@ date: June 2, 2015
 title: Technical notes
 ---
 
+It might help to have an up-to-date [pandoc](http://pandoc.org).
+You can probably get an installer for the most recent version [here](https://github.com/jgm/pandoc/releases/).
+
 
 pandoc invocation
 =================
@@ -19,7 +22,7 @@ General
     (defaults to html) and optional turning on/off of various behavior,
     [listed here](http://pandoc.org/README.html#pandocs-markdown)
 -   `--include-in-header=(file name)` : at the end of the header, e.g.
-    css, javascript, `\newcommand`, etc. (but see `--css`)
+    css, javascript, `\newcommand`, etc. (but see `--css`, and [gotachas](gotchas.html) for latex macros)
 -   `--include-before-body=(file name)` : at the beginning of the
     body, e.g. navigation bars, `\maketitle`, etc.
 -   `--self-contained` : everything in one file (but see `--mathjax`)
