@@ -13,6 +13,7 @@ else
 	MATHJAX = $(LOCAL_MATHJAX)
 endif
 
+# may want to add "--self-contained" to the following
 PANDOC_OPTS = --mathjax=$(MATHJAX)?config=TeX-AMS-MML_HTMLorMML --standalone
 # optionally add in a latex file with macros
 MACROS_FILE = macros.tex
