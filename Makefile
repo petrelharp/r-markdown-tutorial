@@ -3,7 +3,7 @@ SHELL := /bin/bash
 
 .PHONY : all publish
 
-all : using-rmarkdown.slides.html using-rmarkdown.html Readme.html technical-notes.html
+all : using-rmarkdown.slides.html using-rmarkdown.html Readme.html technical-notes.html gotchas.html
 
 # change this to the location of your local MathJax.js library
 LOCAL_MATHJAX = /usr/share/javascript/mathjax/MathJax.js
@@ -40,6 +40,15 @@ KNITR_PATTERNS = list( chunk.begin="^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$", ch
 
 using-rmarkdown.html : using-rmarkdown.Rmd
 	cd $$(dirname $<); Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); knitr::knit(basename("$<"),output=basename("$@"))'
+
+publish : all
+	-rm publish/*html
+	mv *.html publish
+	git checkout gh-pages
+	cp publish/*html .
+	git add *.html
+	git commit -m 'auto update of html'
+	git checkout master
 
 ## VARIOUS SLIDE METHODS
 REVEALJS_OPTS = -t revealjs -V theme=simple -V slideNumber=true -V transition=none -H resources/adjust-revealjs.style
