@@ -1,0 +1,73 @@
+----
+Title: "Generating sequences without repeats"
+Author: "Peter Ralph"
+Date: "`r date()`"
+----
+
+**Goal:**
+To write a function that takes a single argument, $n$,
+and returns all strings of length $n$
+composed of A, C, G, and T
+in which no two adjacent letters are the same.
+
+To start, and for testing purposes, let's compile the list by hand for small $n$.
+For instance, `truth[[2]]` will have the right answer for `n=2`:
+```{r right_answer}
+truth <- list(
+              c("A", "C", "G", "T"),
+              c("AC", "AG", "AT",
+                "CA", "CG", "CT",
+                "GA", "GC", "GT",
+                "TA", "TC", "TG"),
+              c("ACA", "ACG", "ACT",
+                "AGA", "AGC", "AGT",
+                "ATA", "ATC", "ATG",
+                "CAC", "CAG", "CAT",
+                "CGA", "CGC", "CGT",
+                "CTA", "CTC", "CTG",
+                "GAC", "GAG", "GAT",
+                "GCA", "GCG", "GCT",
+                "GTA", "GTC", "GTG",
+                "TAC", "TAG", "TAT",
+                "TCA", "TCG", "TCT",
+                "TGA", "TGC", "TGT"))
+```
+
+As a check, the correct number of these should be `4 * 3^{(n-1)}` --
+four for the first letter, and three for each subsequent one.
+```{r check_truth_lengths}
+4 * (3^(0:2))
+sapply(truth, length)
+```
+
+The procedure of making those lists suggests an elegant idea:
+construct the length $(n+1)$ strings by prepending a letter to the length $n$ strings,
+but omitting the ones that would make a repeat.
+```{r the_function}
+sequences <- function (n) {
+    bases <- c("A", "C", "G", "T")
+    if (n==1) {
+        out <- bases
+    } else {
+        out <- c()
+        smaller <- sequences(n-1)
+        for (x in bases) {
+            omit <- (substr(smaller, 1, 1) == x)
+            out <- c(out, paste0(x, smaller[!omit]))
+        }
+    }
+    return(out)
+}
+```
+
+Now let's check this:
+```{r check_function}
+all(sequences(1) == truth[[1]])
+all(sequences(2) == truth[[2]])
+all(sequences(3) == truth[[3]])
+results <- sapply(1:8, sequences)
+plot(sapply(results, length), xlab='n', ylab='length of result')
+lines(1:8, 4*3^(0:7), col='red')
+```
+
+

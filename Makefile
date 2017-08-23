@@ -3,7 +3,7 @@ SHELL := /bin/bash
 
 .PHONY : all publish
 
-all : using-rmarkdown.slides.html using-rmarkdown.html Readme.html technical-notes.html gotchas.html
+all : using-rmarkdown.slides.html using-rmarkdown.html Readme.html technical-notes.html gotchas.html examples/linear-regression.html examples/sequences.html
 
 # change this to the location of your local MathJax.js library
 LOCAL_MATHJAX = /usr/share/javascript/mathjax/MathJax.js

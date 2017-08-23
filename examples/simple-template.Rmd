@@ -4,7 +4,6 @@ date: "`r date()`"
 ---
 
 ```{r setup, echo=FALSE}
-if (!file.exists(input.file)) { stop("Can't find file.") }
 xy <- read.table(input.file)
 ```
 

@@ -1,7 +1,7 @@
 ---
-title: "Narrowing the brain-publication barrier with R+markdown"
+title: "Writing reproducible, re-usable reports, with R + markdown"
 author: "Peter Ralph"
-date: June 2, 2015
+date: August 22, 2017
 ---
 
 ```{r setup, include=FALSE}
@@ -236,13 +236,13 @@ and can be [internal](#links-and-images).
 ----------------------
 
 Images are **the same** but with a `!` in front. \
-(You can't specify image size in the markdown, [yet](https://github.com/jgm/pandoc/issues/261#issuecomment-101078069).)
+Setting width and height are optional.
 
 ```{.markdown}
-![oh, internet](cat-pandoc.jpg)
+![oh, internet](cat-pandoc.jpg){width=300px height=300px}
 ```
 
-![oh, internet](cat-pandoc.jpg)
+![oh, internet](cat-pandoc.jpg){width=300px height=300px}
 
 
 
@@ -253,10 +253,14 @@ Rendering markdown with [pandoc](http://pandoc.org)
 Get started!
 ------------
 
-0.  Make a directory for this workshop.
-1.  Open a text editor.
+Directions / in Rstudio.
+
+0.  Make a directory for this workshop \
+    / start a new project.
+1.  Open a text editor \
+    / open a new Rmarkdown file and delete everything.
 2.  Write some text.
-3.  Save it as `notes.md`.
+3.  Save it as `notes.Rmd`.
 
 -------------
 
@@ -266,12 +270,14 @@ To compile, either:
 
     ```{.r}
     library(knitr)
-    knit2html("notes.md")
+    knit2html("notes.Rmd")
     ```
 
     and open `notes.html` in your web browser.
 
- *  **or** click on *knit* in `Rstudio`
+ *  **or** in `Rstudio`, save the file (with suffix `.Rmd`) and click on *knit*.
+
+*Where is it?*  Use `getwd()` to tell you.
 
 
 Wait, but the layout?
@@ -315,7 +321,7 @@ At the top of your document, add
 ---
 title: YOUR TITLE HERE
 author: YOUR NAME HERE
-date: June 2, 2015
+date: August 23, 2017
 ---
 ```
 
@@ -359,10 +365,8 @@ Under the hood
 pandoc --help
 ```
 
-![jgm](jgm.png)
+![jgm](jgm.png){width=567px height=339px}
 
-
-more notes in [the appendix](technical-notes.html)
 
 
 
@@ -399,31 +403,47 @@ Just add a *chunk* of R code, wrapped in
 ----------
 
 `````{.Rmd}
-Look,
-$$ \lim_{n \to \infty} \sum_{k=0}^n \frac{ (-1)^n }{ 2n+1 } = \frac{\pi}{4} , $$
-see?
+Powers of two?
 
  ```{r}
- cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) )
+ 2^(0:10)
  ```
 `````
 
 . . .
 
-Look,
-$$ \lim_{n \to \infty} \sum_{k=0}^n \frac{ (-1)^n }{ 2n+1 } = \frac{\pi}{4} , $$
-see?
+Powers of two?
+
+```{r}
+2^(0:10)
+```
+
+----------
+
+`````{.Rmd}
+How about this?
+$$ \lim_{n \to \infty} 4 \sum_{k=1}^n \frac{ (-1)^n }{ 2n+1 } = \pi , $$
+
+ ```{r}
+ cumsum( 4 * (-1)^(0:20) / (2*(0:20)+1) )
+ ```
+`````
+
+. . .
+
+How about this?
+$$ \lim_{n \to \infty} 4 \sum_{k=0}^n \frac{ (-1)^n }{ 2n+1 } = \pi , $$
 
 
 ```{r}
-cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) )
+cumsum( 4 * (-1)^(0:20) / (2*(0:20)+1) )
 ```
 
 --------
 
 `````{.Rmd}
  ```{r}
- plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
+ plot(cumsum( 4 * (-1)^(0:20) / (2*(0:20)+1) ))
  abline(h=pi, col='red')
  ```
 `````
@@ -432,31 +452,25 @@ cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) )
 
 
 ```{r, fig.height=3.5}
-plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
+plot(cumsum( 4 * (-1)^(0:20) / (2*(0:20)+1) ))
 abline(h=pi, col='red')
 ```
 
-----------------------
+Exercise
+--------
 
-**Want to omit the ugly code?**
+Make a short Rmarkdown document
+that
 
-`````{.Rmd}
- ```{r, echo=FALSE}
- plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
- abline(h=pi, col='red')
- ```
-`````
+- checks that $$1 + 2 + \cdots + n = n(n+1)/2$$
+  for every $n$ between 1 and 100
 
-. . .
+- shows these on a plot
 
-```{r, echo=FALSE, fig.height=3.5}
-plot(cumsum( -4 * (-1)^(1:20) / (2*(1:20)-1) ))
-abline(h=pi, col='red')
-```
+- explains (briefly) what's being computed
 
-. . .
+*Useful:* `x = cumsum(1:100)` and `plot(x)` and `lines(y)`.
 
-**but:** leave it in!
 
 
 What's going on
@@ -569,17 +583,13 @@ Online example
 
 --------------
 
-**Question:** 
-How accurate is inference of the slope of a linear regression,
-as a function of the sample size?
+**Goal:** 
+Write a function that will generate all sequences of `A`/`C`/`G`/`T` of length $n$
+for which no two adjacent letters are the same.
 
 . . .
 
-Let's figure it out, by simulation.
-
-. . .
-
-Here is a [pre-written solution](linear-regression.html).
+Here is a [pre-written solution](examples/sequences.html).
 
 
 Your turn
@@ -593,6 +603,7 @@ or just do
 
 ````{.R}
 data(iris)
+dir.create("examples")
 write.table(iris,file="examples/iris.tsv",sep="\t")
 ````
 
@@ -611,8 +622,7 @@ write.table(iris,file="examples/iris.tsv",sep="\t")
 
 4.  Plot the flower dimensions against each other,
 
-    * first using `pairs()`, then
-    * colored by species.
+    * using `pairs()`, and colored by species.
 
 
 
@@ -664,7 +674,7 @@ legend( "topleft", pch=1, legend=levels(xy$type), col=1:nlevels(xy$type) )
  date: ``r "r"` date()`
  ---
 
- ```{r, echo=FALSE}
+ ```{r setup, echo=FALSE}
  xy <- read.table(input.file)
  ```
 
@@ -683,16 +693,15 @@ legend( "topleft", pch=1, legend=levels(xy$type), col=1:nlevels(xy$type) )
 **Render it:**
 
 
-```{r, results="hide", messages=FALSE, warnings=FALSE }
-library(knitr)
-owd <- setwd("examples/thedata")  # determines where output will go
-opts_knit$set(root.dir=".")  # determines where code is evaluated
-file.names <- list.files(".",".*tsv")
+```{r, eval=FALSE}
+library(templater)
+file.names <- list.files("examples/thedata",".*tsv")
 for (input.file in file.names) {
-    output.file <- gsub(".tsv$",".viz.html",input.file)
-    knit2html("../simple-template.Rmd", output=output.file, quiet=TRUE)
+    output.file <- file.path("examples/thedata", 
+                             gsub(".tsv$", ".viz.html", input.file))
+    render_template("examples/simple-template.Rmd", output=output.file, 
+                    change.rootdir=TRUE, quiet=TRUE)
 }
-setwd(owd)
 ```
 
 
@@ -709,6 +718,7 @@ setwd(owd)
 `````
 
 ```{r make_links, results="asis", echo=FALSE}
+file.names <- list.files("examples/thedata",".*tsv")
 output.files <- file.path("examples/thedata",gsub(".tsv$",".viz.html",file.names))
 links <- paste("[",file.names,"](",output.files,")",sep='')
 cat( paste("- ", links, "\n"), "\n" )
@@ -721,15 +731,15 @@ Another exercise
 **Goal:**
 Compare different $k$ with $k$-means on the `iris` dataset.
 
-1.  Make subdirectories, called `iris/k`, for $1 \le k \le 5$.
-2.  In each make a file called `config.js`, using e.g.
+1.  Make subdirectories, called `iris/k`, for $1 \le k \le 5$,
+2.  and in each runs `kmeans` with the appropriate `k`.
 
-    ```{.R}
-    library(jsonlite)
-    cat(toJSON(list(k=3)),file="config.json")
-    ```
-3.  Make a template that reads `config.js` (with `fromJSON`)
-   and then runs `kmeans` with the appropriate `k`.
+Example:
+```{r eval=FALSE}
+data(iris)
+km <- kmeans(iris[,1:4], centers=3)
+pairs(iris, col=km$cluster)
+```
 
 
 Other resources
@@ -738,9 +748,9 @@ Other resources
 
 ---------------
 
- *  my [technical notes](technical-notes.html) I made while writing this up
  -  [Karl Broman's](http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html) intro to Rmarkdown
  -  the extensive, excellent [documentation for pandoc](http://pandoc.org/README.html)
  -  [Stack](http://stackoverflow.com/questions/tagged/rmarkdown)[Overflow](http://stackoverflow.com/questions/tagged/knitr)
+ -  my [technical notes](technical-notes.html) I made while writing this up
 
 
