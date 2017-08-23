@@ -695,8 +695,7 @@ legend( "topleft", pch=1, legend=levels(xy$type), col=1:nlevels(xy$type) )
 
  ```{r}
  plot( height ~ age, col=type, data=xy )
- legend( "topleft", pch=1, col=1:nlevels(xy$type), 
-    col=1:nlevels(xy$type) )
+ legend( "topleft", pch=1, col=1:nlevels(xy$type) )
  ```
 ``````
 
@@ -717,7 +716,7 @@ legend( "topleft", pch=1, legend=levels(xy$type), col=1:nlevels(xy$type) )
 library(devtools)
 install_github("petrelharp/templater")
 library(templater)
-dir.names <- file.path("examples/thedata", LETTERS[1:10])
+dir.names <- file.path("examples/thedata", LETTERS[1:8])
 for (input.dir in dir.names) {
     output.file <- file.path(input.dir, "visualization.html")
     render_template("examples/simple-template.Rmd", output=output.file, 
@@ -732,15 +731,15 @@ for (input.dir in dir.names) {
 
 `````{.Rmd}
  ```{r make_links, results="asis"}
- output.files <- file.path("examples/thedata", LETTERS[1:10], "visualization.html")
+ output.files <- file.path("examples/thedata", LETTERS[1:8], "visualization.html")
  links <- paste("[",dir.names,"](",output.files,")",sep='')
  cat( paste("- ", links, "\n"), "\n" )
  ```
 `````
 
 ```{r make_links, results="asis", echo=FALSE}
-dir.names <- file.path("examples/thedata", LETTERS[1:10])
-output.files <- file.path("examples/thedata", LETTERS[1:10], "visualization.html")
+dir.names <- file.path("examples/thedata", LETTERS[1:8])
+output.files <- file.path("examples/thedata", LETTERS[1:8], "visualization.html")
 links <- paste("[",dir.names,"](",output.files,")",sep='')
 cat( paste("- ", links, "\n"), "\n" )
 ```
