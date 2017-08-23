@@ -1,15 +1,15 @@
 ---
-title: "Visualization for `r input.file`"
+title: "Visualization for ``r "r"` getwd()`"
 date: "`r date()`"
 ---
 
 ```{r setup, echo=FALSE}
+input.file <- "data.tsv"
 xy <- read.table(input.file)
 ```
 
-The file `r input.file` 
-has `r nrow(xy)` observations:
-
+The file ``r "r"` normalizePath(input.file)`
+has ``r "r"` nrow(xy)` observations:
 ```{r plotit}
 plot( height ~ age, col=type, data=xy )
 legend( "topleft", pch=1, legend=levels(xy$type), col=1:nlevels(xy$type) )

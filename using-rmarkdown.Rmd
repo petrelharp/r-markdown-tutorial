@@ -1,7 +1,7 @@
 ---
 title: "Writing reproducible, re-usable reports, with R + markdown"
 author: "Peter Ralph"
-date: August 22, 2017
+date: August 23, 2017
 ---
 
 ```{r setup, include=FALSE}
@@ -467,7 +467,7 @@ that
 
 - shows these on a plot
 
-- explains (briefly) what's being computed
+- explains what's being computed
 
 *Useful:* `x = cumsum(1:100)` and `plot(x)` and `lines(y)`.
 
@@ -551,8 +551,8 @@ One option: use `pander`.
 ```
 
 
-R everywhere
-------------
+Inline code
+-----------
 
 `````{.Rmd}
 You can 
@@ -572,9 +572,9 @@ Even in the YAML header.
 Go change yours!
 
     ---
-    title: My notes
-    author: Peter Ralph
-    date: ``r "r"` date()`
+    title: "My notes"
+    author: "Peter Ralph"
+    date: "``r "r"` date()`"
     ---
 
 
@@ -613,12 +613,12 @@ write.table(iris,file="examples/iris.tsv",sep="\t")
 
 2.  Describe the dataset: number of observations, variables, etcetera.
 
-    - inline `R` code (`` ``r "r nrow(data)"`` ``)
+    - inline `R` code (`` ``r "r nrow(iris)"`` ``)
 
 3.  Make a table of the number of observations for each species.
 
     * `pander()`
-    * or `results="asis"` and `print.xtable(xtable(),type='html')`
+    * or `results="asis"` and `print.xtable(xtable( ),type='html')`
 
 4.  Plot the flower dimensions against each other,
 
@@ -632,26 +632,37 @@ Templated reports
 -----------------
 
 Set up some fake data:
+each has 50 observations of two quantitative variables (`age` and `height`)
+and a categorical variable (`type`):
 
 ```{r make_data, warning=FALSE}
 dir.create("examples/thedata")
 owd <- setwd("examples/thedata")
-for (samp in LETTERS[1:10]) {
+for (samp in LETTERS[1:8]) {
+    dir.create(samp)
     xy <- data.frame( 
         age=exp(rnorm(50)),
         type=sample(letters[1:3],50,replace=TRUE)
     )
     xy$height <- 5 + runif(1)*xy$age + 3*runif(1)*as.numeric(xy$type) + rnorm(50)
-    write.table(xy,file=paste(samp,"-data.tsv",sep=''))
+    write.table(xy,file=paste0(samp,"/data.tsv"))
 }
 setwd(owd)
 ```
 
 ------------------
 
-We now have 10 datasets, \
-and would like to *visualize* each, 
-like:
+We now have 10 datasets,
+each in a file like [`A/data.tsv`](examples/thedata/A/data.tsv).
+Here's what one looks like:
+```{r show_data}
+xy
+```
+
+------------------
+
+We would like to *visualize* each, 
+like this:
 
 ```{r plot_one_data, echo=FALSE}
 xy <- data.frame( 
@@ -670,15 +681,16 @@ legend( "topleft", pch=1, legend=levels(xy$type), col=1:nlevels(xy$type) )
 
 ``````{.Rmd}
  ---
- title: Visualization for ``r "r"` input.file`
- date: ``r "r"` date()`
+ title: "Visualization for ``r "r"` getwd()`"
+ date: "``r "r"` date()`"
  ---
 
  ```{r setup, echo=FALSE}
+ input.file <- "data.tsv"
  xy <- read.table(input.file)
  ```
 
- The file ``r "r"` input.file` 
+ The file ``r "r"` normalizePath(input.file)`
  has ``r "r"` nrow(xy)` observations:
 
  ```{r}
@@ -688,17 +700,26 @@ legend( "topleft", pch=1, legend=levels(xy$type), col=1:nlevels(xy$type) )
  ```
 ``````
 
+**Input:** this looks for the file `data.tsv` in the current directory.
+
 -----------------------
 
 **Render it:**
 
+*Option 1:* copy the template into each of the ten directories, and render them there.
+
+. . .
+
+*Option 2:* use my `templater` package.
+
 
 ```{r, eval=FALSE}
+library(devtools)
+install_github("petrelharp/templater")
 library(templater)
-file.names <- list.files("examples/thedata",".*tsv")
-for (input.file in file.names) {
-    output.file <- file.path("examples/thedata", 
-                             gsub(".tsv$", ".viz.html", input.file))
+dir.names <- file.path("examples/thedata", LETTERS[1:10])
+for (input.dir in dir.names) {
+    output.file <- file.path(input.dir, "visualization.html")
     render_template("examples/simple-template.Rmd", output=output.file, 
                     change.rootdir=TRUE, quiet=TRUE)
 }
@@ -711,16 +732,16 @@ for (input.file in file.names) {
 
 `````{.Rmd}
  ```{r make_links, results="asis"}
- output.files <- file.path("examples/thedata",gsub(".tsv$",".viz.html",file.names))
- links <- paste("[",file.names,"](",output.files,")",sep='')
+ output.files <- file.path("examples/thedata", LETTERS[1:10], "visualization.html")
+ links <- paste("[",dir.names,"](",output.files,")",sep='')
  cat( paste("- ", links, "\n"), "\n" )
  ```
 `````
 
 ```{r make_links, results="asis", echo=FALSE}
-file.names <- list.files("examples/thedata",".*tsv")
-output.files <- file.path("examples/thedata",gsub(".tsv$",".viz.html",file.names))
-links <- paste("[",file.names,"](",output.files,")",sep='')
+dir.names <- file.path("examples/thedata", LETTERS[1:10])
+output.files <- file.path("examples/thedata", LETTERS[1:10], "visualization.html")
+links <- paste("[",dir.names,"](",output.files,")",sep='')
 cat( paste("- ", links, "\n"), "\n" )
 ```
 
