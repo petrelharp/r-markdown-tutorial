@@ -1,12 +1,30 @@
 <style type="text/css">
 
-.reveal h1 { font-size: 2.5em; } 
+.reveal { font-size: 30px; }
+
+.reveal h1 { font-size: 1.5em; } 
+
+.reveal h2 { font-size: 1.2em; } 
 
 .reveal .slides { text-align: left; }
 
 .reveal .slides figure { text-align: center; }
 
+.centered p { text-align: center; }
+
+.caption p { font-size: 75%; color: grey; text-align: right; }
+
+.greyed { color: grey; }
+
+div.floatright { float: right; text-align: right; }
+
 .reveal figcaption { display: none; }
+
+img.finger, .reveal img.finger { vertical-align: text-top; border: none; }
+
+code { white-space: pre; }
+
+.reveal section img { border: 0; }
 
 </style>
 

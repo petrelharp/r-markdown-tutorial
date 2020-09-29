@@ -93,15 +93,34 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <![endif]-->
   <style type="text/css">
   
-  .reveal h1 { font-size: 2.5em; } 
+  .reveal { font-size: 30px; }
+  
+  .reveal h1 { font-size: 1.5em; } 
+  
+  .reveal h2 { font-size: 1.2em; } 
   
   .reveal .slides { text-align: left; }
   
   .reveal .slides figure { text-align: center; }
   
+  .centered p { text-align: center; }
+  
+  .caption p { font-size: 75%; color: grey; text-align: right; }
+  
+  .greyed { color: grey; }
+  
+  div.floatright { float: right; text-align: right; }
+  
   .reveal figcaption { display: none; }
   
+  img.finger, .reveal img.finger { vertical-align: text-top; border: none; }
+  
+  code { white-space: pre; }
+  
+  .reveal section img { border: 0; }
+  
   </style>
+  <div style="display: none">
   \[
   %%
   % Add your macros here; they'll be included in pdf and html output.
@@ -112,6 +131,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   \renewcommand{\P}{\mathbb{P}}  % probability
   
   \]
+  </div>
 </head>
 <body>
   <div class="reveal">
@@ -492,10 +512,10 @@ $$ \lim_{n \to \infty} 4 \sum_{k=1}^n \frac{ (-1)^n }{ 2n+1 } = \pi , $$
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;">59</td>
-<td style="text-align: center;">71</td>
-<td style="text-align: center;">87</td>
+<td style="text-align: center;">70</td>
+<td style="text-align: center;">85</td>
 <td style="text-align: center;">83</td>
+<td style="text-align: center;">62</td>
 </tr>
 </tbody>
 </table>
@@ -566,57 +586,57 @@ date: &quot;`r date()`&quot;
 
 <p>We now have 10 datasets, each in a file like <a href="examples/thedata/A/data.tsv"><code>A/data.tsv</code></a>. Here’s what one looks like:</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1">xy</a></code></pre></div>
-<pre><code>##            age type    height
-## 1   0.31707773    a  7.914611
-## 2   2.19582239    b 11.026011
-## 3   1.55221372    a  8.565385
-## 4   4.01149124    a  9.788000
-## 5   0.66919310    a  7.700931
-## 6  20.65951197    a 22.902957
-## 7   0.35980727    a  5.003123
-## 8   5.79973169    b 13.959134
-## 9   0.14888969    b  7.585979
-## 10  1.68566587    c 13.742501
-## 11  1.39484168    c 11.104901
-## 12  1.03709237    a  9.149147
-## 13  0.20094957    c 11.637219
-## 14  0.42865927    a  8.063438
-## 15  0.85432521    b 10.969470
-## 16  0.04779132    c 11.702954
-## 17  2.32633401    a  9.812272
-## 18  0.37340089    b  8.337178
-## 19 14.64741470    a 19.205178
-## 20  1.63314350    b  9.655089
-## 21  1.61788654    c 10.276301
-## 22  1.47744338    b 10.024203
-## 23  1.02522296    c 12.240497
-## 24  2.84797092    b  9.993902
-## 25  0.58462911    a  7.815480
-## 26  1.96041189    a  9.983420
-## 27  0.35619735    a  7.166195
-## 28  1.54160584    c 11.610713
-## 29  0.36191576    a  6.753099
-## 30  0.51411752    b  9.691261
-## 31  1.24080033    a  7.451592
-## 32  1.33257362    b 10.163221
-## 33  1.83785002    b  9.312483
-## 34  0.47428615    b  7.847135
-## 35  1.47378437    b  9.530141
-## 36  0.77179413    a  6.690088
-## 37  0.98417765    a  6.450861
-## 38  0.26468305    a  6.339068
-## 39  1.09840414    c 12.756140
-## 40  4.66346007    c 13.025881
-## 41  0.67197546    b 10.574617
-## 42  0.66340845    a  7.109553
-## 43  4.60134193    b 12.820813
-## 44  0.90235597    a  6.240945
-## 45  1.53748529    c 12.062709
-## 46  0.11785291    b  8.688989
-## 47  4.13447539    c 14.515374
-## 48  0.77918354    c 10.958445
-## 49  0.69097287    c 10.787374
-## 50  1.67836281    a  8.240941</code></pre>
+<pre><code>##          age type    height
+## 1  1.4796488    c  9.361211
+## 2  1.0046351    b  7.809438
+## 3  0.8169789    c  8.509819
+## 4  0.1572326    a  5.702507
+## 5  0.2543326    a  6.924387
+## 6  8.1443866    b 13.790307
+## 7  0.8223393    a  7.054007
+## 8  6.1442730    b 13.426498
+## 9  3.0191242    b  9.207488
+## 10 0.7728761    c  7.260055
+## 11 2.7337382    a  8.775505
+## 12 4.9572850    b 10.785370
+## 13 1.1893305    b  7.997365
+## 14 7.4601762    a 11.033910
+## 15 0.2412250    b  5.188430
+## 16 1.7532513    c  9.365491
+## 17 0.5922570    c  7.953115
+## 18 1.1926213    b 10.210615
+## 19 1.0236192    b  6.526443
+## 20 5.1199085    b  8.518106
+## 21 0.9541798    a  5.253971
+## 22 0.3123665    b  5.506721
+## 23 1.0759528    a  5.045323
+## 24 1.4650504    a  6.649536
+## 25 1.6650421    a  7.217283
+## 26 1.1198742    b  6.362583
+## 27 1.2415980    b  7.193038
+## 28 2.4319417    b  8.180893
+## 29 0.5862522    b  6.385537
+## 30 0.8680723    b  7.183052
+## 31 0.6600719    b  6.006921
+## 32 0.7879503    b  6.422339
+## 33 2.5323571    c  9.426129
+## 34 0.2440238    c  7.841699
+## 35 0.7925729    a  5.619829
+## 36 3.0982004    c  9.460839
+## 37 1.2647280    b  6.505928
+## 38 2.3627868    a  8.699527
+## 39 0.4884444    a  5.547974
+## 40 0.4585299    a  6.704829
+## 41 0.3537712    c  7.097977
+## 42 3.4127451    b  8.615107
+## 43 0.7935832    a  6.186167
+## 44 0.5354499    c  6.376454
+## 45 1.0126319    c  6.952713
+## 46 0.3659778    c  6.663840
+## 47 0.9081240    c  8.437199
+## 48 0.4860253    b  6.594441
+## 49 0.3530557    a  7.768926
+## 50 0.5318298    a  5.175261</code></pre>
 </section><section class="slide level2">
 
 <p>We would like to <em>visualize</em> each, like this:</p>

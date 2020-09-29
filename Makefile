@@ -1,27 +1,30 @@
 SHELL := /bin/bash
 # use bash for <( ) syntax
 
-.PHONY : all publish
+.PHONY : 
 
 all : using-rmarkdown.slides.html using-rmarkdown.html Readme.html technical-notes.html gotchas.html examples/linear-regression.html examples/sequences.html
 
 # change this to the location of your local MathJax.js library
 LOCAL_MATHJAX = /usr/share/javascript/mathjax/MathJax.js
 ifeq ($(wildcard $(LOCAL_MATHJAX)),)
-	MATHJAX = https://cdn.mathjax.org/mathjax/latest/MathJax.js
+	MATHJAX = --mathjax
 else
-	MATHJAX = $(LOCAL_MATHJAX)
+	MATHJAX = --mathjax=$(LOCAL_MATHJAX)
 endif
 
 # may want to add "--self-contained" to the following
-PANDOC_OPTS = --mathjax=$(MATHJAX)?config=TeX-AMS-MML_HTMLorMML --standalone
+PANDOC_OPTS = $(MATHJAX) --standalone
 # optionally add in a latex file with macros
-MACROS_FILE = macros.tex
-ifeq ($(wildcard $(MACROS_FILE)),)
+LATEX_MACROS = macros.tex
+ifeq ($(wildcard $(LATEX_MACROS)),)
 	# macros file isn't there
 else
-	PANDOC_OPTS += -H <(echo '\['; cat $(MACROS_FILE); echo '\]')
+	PANDOC_OPTS += -H .pandoc.$(LATEX_MACROS)
 endif
+
+.pandoc.$(LATEX_MACROS) : $(LATEX_MACROS)
+	(echo '<div style="display: none">'; echo '\['; cat $(LATEX_MACROS); echo '\]'; echo '</div>') > $@
 
 # knitr by default tries to interpret ANY code chunk; I only want it to do the ones beginning with ```r.
 KNITR_PATTERNS = list( chunk.begin="^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$", chunk.end="^```+\\s*$$", inline.code="`r +([^`]+)\\s*`")
@@ -29,29 +32,23 @@ KNITR_PATTERNS = list( chunk.begin="^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$", ch
 # KNITR_PATTERNS = list( chunk.begin="^```+\\\\s*\\\\{[.]?(r[a-zA-Z]*.*)\\\\}\\\\s*$$", chunk.end="^```+\\\\s*$$", inline.code="`r +([^`]+)\\\\s*`")
 
 %.html : %.Rmd
-	# cd $$(dirname $<); Rscript -e 'knitr::knit2html(basename("$<"),output=basename("$@"))'
-	# cd $$(dirname $<); Rscript -e 'rmarkdown::render(basename("$<"),output_file=basename("$@"))'
-	Rscript -e 'templater::render_template("$<", output="$@", change.rootdir=TRUE)'
+	Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); templater::render_template("$<", output="$@", change.rootdir=TRUE, clean=FALSE)'
 
-%.html : %.md
-	pandoc -o $@ $(PANDOC_OPTS) $<
+%.html : %.md .pandoc.$(LATEX_MACROS)
+	pandoc -o $@ $(PANDOC_OPTS) $(MATHJAX_OPTS) $<
 
-%.md : %.Rmd
-	# cd $$(dirname $<); Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); knitr::knit(basename("$<"),output=basename("$@"))'
+%.local.html : %.md
+	pandoc -o $@ $(PANDOC_OPTS) $(LOCAL_MATHJAX_OPTS) $<
+
+%.md : %.Rmd .pandoc.$(LATEX_MACROS)
 	Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); templater::render_template("$<", output="$@", change.rootdir=TRUE)'
+
+%.pdf : %.md
+	pandoc -o $@ -t latex $<
 
 using-rmarkdown.html : using-rmarkdown.Rmd
-	# cd $$(dirname $<); Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); knitr::knit(basename("$<"),output=basename("$@"))'
 	Rscript -e 'knitr::knit_patterns[["set"]]($(KNITR_PATTERNS)); templater::render_template("$<", output="$@", change.rootdir=TRUE)'
 
-publish : all
-	-rm publish/*html
-	mv *.html publish
-	git checkout gh-pages
-	cp publish/*html .
-	git add *.html
-	git commit -m 'auto update of html'
-	git checkout master
 
 ## VARIOUS SLIDE METHODS
 REVEALJS_OPTS = -t revealjs -V theme=simple -V slideNumber=true -V transition=none -H resources/adjust-revealjs.style
