@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <meta name="author" content="Peter Ralph">
+  <meta name="dcterms.date" content="2020-09-29">
+  <title>Writing reproducible, re-usable reports, with R + markdown</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal.js/css/reveal.css">
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="reveal.js/css/theme/simple.css" id="theme">
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement( 'link' );
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match( /print-pdf/gi ) ? 'reveal.js/css/print/pdf.css' : 'reveal.js/css/print/paper.css';
+    document.getElementsByTagName( 'head' )[0].appendChild( link );
+  </script>
+  <!--[if lt IE 9]>
+  <script src="reveal.js/lib/js/html5shiv.js"></script>
+  <![endif]-->
+  <style type="text/css">
+  
+  .reveal h1 { font-size: 2.5em; } 
+  
+  .reveal .slides { text-align: left; }
+  
+  .reveal .slides figure { text-align: center; }
+  
+  .reveal figcaption { display: none; }
+  
+  </style>
+  \[
+  %%
+  % Add your macros here; they'll be included in pdf and html output.
+  %%
+  
+  \newcommand{\R}{\mathbb{R}}    % reals
+  \newcommand{\E}{\mathbb{E}}    % expectation
+  \renewcommand{\P}{\mathbb{P}}  % probability
+  
+  \]
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide">
+  <h1 class="title">Writing reproducible, re-usable reports, with R + markdown</h1>
+  <p class="author">Peter Ralph</p>
+  <p class="date">September 29, 2020</p>
+</section>
+
+<section><section id="markdown" class="title-slide slide level1"><h1>Markdown</h1></section><section id="goal" class="slide level2">
+<h2>Goal:</h2>
+<p>Communicate your thoughts to your collaborators and your future self,</p>
+<div class="fragment">
+<p>combining text, math, documented code,</p>
+</div>
+<div class="fragment">
+<p>and <strong>no fuss</strong>.</p>
+</div>
+</section><section class="slide level2">
+
+<p>No fussing about layout:</p>
+<ul>
+<li>unformatted text</li>
+<li><a href="http://commonmark.org/">markdown</a></li>
+<li><a href="http://latex-project.org/intro.html">LaTeX</a></li>
+</ul>
+<p>Markdown aims to be readable as-is,<br />
+but has methods to produce beautiful output.</p>
+<div class="fragment">
+<blockquote>
+<p>A Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions. – <a href="http://daringfireball.net/projects/markdown/syntax#philosophy">John Gruber</a></p>
+</blockquote>
+</div>
+</section><section id="no-really-dont-think-about-the-layout" class="slide level2">
+<h2>No, really, don’t think about the layout</h2>
+<p>Don’t even <em>think</em> about the layout, just the content.</p>
+<blockquote>
+<p>[…] it is better to leave document design to document designers, and to let authors get on with writing documents – <a href="http://latex-project.org/intro.html">intro to LaTeX</a></p>
+</blockquote>
+</section><section class="slide level2">
+
+<p>Today’s goal:</p>
+<ol type="1">
+<li>Learn a few simple rules</li>
+<li>and get going producing content.</li>
+</ol>
+</section><section id="structuring-text" class="slide level2">
+<h2>Structuring text</h2>
+<ol type="1">
+<li>Separate things with empty lines.</li>
+<li>Wrap lines whenever you feel like it.</li>
+</ol>
+<figure>
+<img data-src="Erika_9_typewriter.jpg" alt="your laptop?" /><figcaption>your laptop?</figcaption>
+</figure>
+<!--
+On a typewriter,
+carriage return
+always does the same thing.
+
+But, it's nice to have different (semantic) levels of spaces.
+-->
+</section><section id="source" class="slide level2">
+<h2>Source</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb1-1" title="1">Text formatting</a>
+<a class="sourceLine" id="cb1-2" title="2">===============</a>
+<a class="sourceLine" id="cb1-3" title="3"></a>
+<a class="sourceLine" id="cb1-4" title="4">Inline markup</a>
+<a class="sourceLine" id="cb1-5" title="5">-------------</a>
+<a class="sourceLine" id="cb1-6" title="6"></a>
+<a class="sourceLine" id="cb1-7" title="7">**Paragraphs** begin and end </a>
+<a class="sourceLine" id="cb1-8" title="8">with empty lines, and are *not* indented.</a>
+<a class="sourceLine" id="cb1-9" title="9"></a>
+<a class="sourceLine" id="cb1-10" title="10">- **bold** and *emphasis*</a>
+<a class="sourceLine" id="cb1-11" title="11">- ~~strikeout~~</a>
+<a class="sourceLine" id="cb1-12" title="12"><span class="fl">- super^scripts^ and sub~scripts~</span></a>
+<a class="sourceLine" id="cb1-13" title="13"><span class="fl">- and </span><span class="bn">`inline_code($fixed.width)`</span></a></code></pre></div>
+</section><section id="result" class="slide level2">
+<h2>Result</h2>
+<h3 id="text-formatting">Text formatting</h3>
+<h4 id="inline-markup">Inline markup</h4>
+<p><strong>Paragraphs</strong> begin and end with empty lines, and are <em>not</em> indented.</p>
+<ul>
+<li><strong>bold</strong> and <em>emphasis</em></li>
+<li><del>strikeout</del></li>
+<li>super<sup>scripts</sup> and sub<sub>scripts</sub></li>
+<li>and <code>inline_code($fixed.width)</code></li>
+</ul>
+</section><section id="source-1" class="slide level2">
+<h2>Source</h2>
+<div class="sourceCode" id="cb2"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb2-1" title="1">Lists must be preceded by an empty line,</a>
+<a class="sourceLine" id="cb2-2" title="2"></a>
+<a class="sourceLine" id="cb2-3" title="3">1. <span class="fl"> ordered or unordered.</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="fl">2.  Indenting subsequent content</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="fl">    </span></a>
+<a class="sourceLine" id="cb2-6" title="6"><span class="fl">    -  will continue the list</span></a>
+<a class="sourceLine" id="cb2-7" title="7"></a>
+<a class="sourceLine" id="cb2-8" title="8"><span class="bn">        *   and nest</span></a>
+<a class="sourceLine" id="cb2-9" title="9"><span class="bn">        *   other lists.</span></a>
+<a class="sourceLine" id="cb2-10" title="10"></a>
+<a class="sourceLine" id="cb2-11" title="11">3. <span class="fl"> *Indenting* means one tab, or four spaces.</span></a>
+<a class="sourceLine" id="cb2-12" title="12"></a>
+<a class="sourceLine" id="cb2-13" title="13">After using markdown for a bit, </a>
+<a class="sourceLine" id="cb2-14" title="14">go read <span class="ot">[pandoc&#39;s documentation](http://pandoc.org/README.html)</span>.</a></code></pre></div>
+</section><section class="slide level2">
+
+<p>Lists must be preceded by an empty line,</p>
+<ol type="1">
+<li>ordered or unordered.</li>
+<li><p>Indenting subsequent content</p>
+<ul>
+<li><p>will continue the list</p>
+<ul>
+<li>and nest</li>
+<li>other lists.</li>
+</ul></li>
+</ul></li>
+<li><p><em>Indenting</em> means one tab, or four spaces.</p></li>
+</ol>
+<p>After using markdown for a bit, go read <a href="http://pandoc.org/README.html">pandoc’s documentation</a>.</p>
+</section><section id="math" class="slide level2">
+<h2>Math</h2>
+<pre><code>Math goes between `$`, single ($\pi$), or double: 
+$$ \frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1} .$$</code></pre>
+<p>Math goes between <code>$</code>, single (<span class="math inline">\(\pi\)</span>), or double: <span class="math display">\[\frac{\pi}{4} = \sum_{n=0}^\infty \frac{(-1)^n}{2k+1} .\]</span></p>
+</section><section class="slide level2">
+
+<p>Even math environments <em>inside</em> double dollar signs:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode md"><code class="sourceCode markdown"><a class="sourceLine" id="cb4-1" title="1">$$</a>
+<a class="sourceLine" id="cb4-2" title="2">\begin{align}</a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="bn">    x &amp;= (a+b)^2 - (a-b)^2 \\</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="bn">      &amp;= 4ab</span></a>
+<a class="sourceLine" id="cb4-5" title="5">\end{align}</a>
+<a class="sourceLine" id="cb4-6" title="6">$$</a></code></pre></div>
+<p><span class="math display">\[\begin{align}
+    x &amp;= (a+b)^2 - (a-b)^2 \\
+      &amp;= 4ab
+\end{align}\]</span></p>
+</section><section id="code-blocks" class="slide level2">
+<h2>Code blocks</h2>
+<pre><code>```{.r}
+msg &lt;- &quot;Hello, world.&quot;
+print(msg)
+```</code></pre>
+<p><strong>produces</strong></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">msg &lt;-<span class="st"> &quot;Hello, world.&quot;</span></a>
+<a class="sourceLine" id="cb6-2" title="2"><span class="kw">print</span>(msg)</a></code></pre></div>
+</section><section id="blockquotes" class="slide level2">
+<h2>Blockquotes</h2>
+<pre><code>&gt; I also dream about a modern replacement for LaTeX 
+&gt; designed from the ground up to target multiple output formats 
+&gt; (at least PDF, HTML, EPUB). -- [John MacFarlane](http://john.macfarlane.usesthis.com/)</code></pre>
+<p><strong>produces</strong></p>
+<blockquote>
+<p>I also dream about a modern replacement for LaTeX designed from the ground up to target multiple output formats (at least PDF, HTML, EPUB). – <a href="http://john.macfarlane.usesthis.com/">John MacFarlane</a></p>
+</blockquote>
+</section><section id="links-and-images" class="slide level2">
+<h2>Links and Images</h2>
+<p><a href="http://www.w3.org/">Links</a> just go in parentheses, and can be <a href="#/links-and-images">internal</a>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb8-1" title="1"><span class="ot">[Links](http://www.w3.org/)</span> just go in parentheses, </a>
+<a class="sourceLine" id="cb8-2" title="2">and can be <span class="ot">[internal](#links-and-images)</span>.</a></code></pre></div>
+</section><section class="slide level2">
+
+<p>Images are <strong>the same</strong> but with a <code>!</code> in front.<br />
+Setting width and height are optional.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown"><code class="sourceCode markdown"><a class="sourceLine" id="cb9-1" title="1"><span class="al">![oh, internet](cat-pandoc.jpg)</span>{width=300px height=300px}</a></code></pre></div>
+<figure>
+<img data-src="cat-pandoc.jpg" alt="oh, internet" width="300" height="300" /><figcaption>oh, internet</figcaption>
+</figure>
+</section></section>
+<section><section id="rendering-markdown-with-pandoc" class="title-slide slide level1"><h1>Rendering markdown with <a href="http://pandoc.org">pandoc</a></h1></section><section id="get-started" class="slide level2">
+<h2>Get started!</h2>
+<p>Directions / in Rstudio.</p>
+<ol start="0" type="1">
+<li>Make a directory for this workshop<br />
+/ start a new project.</li>
+<li>Open a text editor<br />
+/ open a new Rmarkdown file and delete everything.</li>
+<li>Write some text.</li>
+<li>Save it as <code>notes.Rmd</code>.</li>
+</ol>
+</section><section class="slide level2">
+
+<p>To compile, either:</p>
+<ul>
+<li><p>Open <code>R</code>, run</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1"><span class="kw">library</span>(knitr)</a>
+<a class="sourceLine" id="cb10-2" title="2"><span class="kw">knit2html</span>(<span class="st">&quot;notes.Rmd&quot;</span>)</a></code></pre></div>
+<p>and open <code>notes.html</code> in your web browser.</p></li>
+<li><p><strong>or</strong> in <code>Rstudio</code>, save the file (with suffix <code>.Rmd</code>) and click on <em>knit</em>.</p></li>
+</ul>
+<p><em>Where is it?</em> Use <code>getwd()</code> to tell you.</p>
+</section><section id="wait-but-the-layout" class="slide level2">
+<h2>Wait, but the layout?</h2>
+<p>Remember,</p>
+<blockquote>
+<p>[…] it is better to leave document design to document designers, and to let authors get on with writing documents.</p>
+</blockquote>
+<div class="fragment">
+<p>If you <strong>must</strong>, then:</p>
+<ul>
+<li>tweak the css</li>
+<li>modify a <a href="http://rmarkdown.rstudio.com/developer_custom_formats.html">rmarkdown format</a></li>
+<li>or a <a href="http://pandoc.org/README.html#templates">pandoc template</a></li>
+</ul>
+</div>
+</section><section id="gotchas" class="slide level2">
+<h2>Gotchas</h2>
+<ol type="1">
+<li>many things need to begin with an empty line</li>
+<li>carriage returns don’t (usually) mean anything</li>
+<li>but indentations do (<em>by at least four spaces</em>)</li>
+</ol>
+<div class="fragment">
+<p>For more info see <a href="http://pandoc.org/README.html#the-four-space-rule">the documentation</a>.</p>
+</div>
+</section><section id="metadata" class="slide level2">
+<h2>Metadata</h2>
+<p>At the top of your document, add</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb11-1" title="1"><span class="ot">---</span></a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="fu">title:</span><span class="at"> YOUR TITLE HERE</span></a>
+<a class="sourceLine" id="cb11-3" title="3"><span class="fu">author:</span><span class="at"> YOUR NAME HERE</span></a>
+<a class="sourceLine" id="cb11-4" title="4"><span class="fu">date:</span><span class="at"> August 23, 2017</span></a>
+<a class="sourceLine" id="cb11-5" title="5"><span class="ot">---</span></a></code></pre></div>
+<p>… the <a href="http://yaml.org/">YAML</a> metadata,<br />
+delimited by <strong>exactly three</strong> dashes.</p>
+</section><section class="slide level2">
+
+<p><strong>Note:</strong> Besides setting the title, you can control the <strong>output</strong> in <a href="http://tex.stackexchange.com/questions/139139/adding-headers-and-footers-using-pandoc/139205#139205">many</a> <a href="http://rmarkdown.rstudio.com/html_document_format.html#pandoc-arguments">ways</a> here.</p>
+<p><em>For example</em>: add</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb12-1" title="1"><span class="fu">output_format :</span><span class="at"> pdf_document</span></a></code></pre></div>
+<p>and render with <code>rmarkdown::render("notes.md")</code>.</p>
+<div class="fragment">
+<p><strong>or even:</strong></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode yaml"><code class="sourceCode yaml"><a class="sourceLine" id="cb13-1" title="1"><span class="fu">output_format :</span><span class="at"> word_document</span></a></code></pre></div>
+</div>
+</section><section id="under-the-hood" class="slide level2">
+<h2>Under the hood</h2>
+<p><a href="http://pandoc.org/README.html"><code>pandoc</code></a></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb14-1" title="1"><span class="ex">pandoc</span> --help</a></code></pre></div>
+<figure>
+<img data-src="jgm.png" alt="jgm" width="567" height="339" /><figcaption>jgm</figcaption>
+</figure>
+</section></section>
+<section><section id="adding-in-r" class="title-slide slide level1"><h1>Adding in R</h1></section><section class="slide level2">
+
+<p><strong>Goal:</strong> add R code to the document, <em>along with its output</em>.</p>
+<div class="fragment">
+<figure>
+<img data-src="knitr-screenshot.png" alt="knitr" /><figcaption>knitr</figcaption>
+</figure>
+</div>
+</section><section id="go-ahead" class="slide level2">
+<h2>Go ahead</h2>
+<p>Just add a <em>chunk</em> of R code, wrapped in</p>
+<pre class="Rmd"><code> ```{r}
+ # PUT ARBITRARY R CODE HERE
+ ```</code></pre>
+<div class="fragment">
+<p><strong>Try it!</strong></p>
+</div>
+</section><section class="slide level2">
+
+<pre class="Rmd"><code>Powers of two?
+
+ ```{r}
+ 2^(0:10)
+ ```</code></pre>
+<div class="fragment">
+<p>Powers of two?</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="dv">2</span><span class="op">^</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">10</span>)</a></code></pre></div>
+<pre><code>##  [1]    1    2    4    8   16   32   64  128  256  512 1024</code></pre>
+</div>
+</section><section class="slide level2">
+
+<pre class="Rmd"><code>How about this?
+$$ \lim_{n \to \infty} 4 \sum_{k=1}^n \frac{ (-1)^n }{ 2n+1 } = \pi , $$
+
+ ```{r}
+ cumsum( 4 * (-1)^(0:20) / (2*(0:20)+1) )
+ ```</code></pre>
+<div class="fragment">
+<p>How about this? <span class="math display">\[ \lim_{n \to \infty} 4 \sum_{k=0}^n \frac{ (-1)^n }{ 2n+1 } = \pi , \]</span></p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">cumsum</span>( <span class="dv">4</span> <span class="op">*</span><span class="st"> </span>(<span class="op">-</span><span class="dv">1</span>)<span class="op">^</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">20</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span><span class="op">*</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">20</span>)<span class="op">+</span><span class="dv">1</span>) )</a></code></pre></div>
+<pre><code>##  [1] 4.000000 2.666667 3.466667 2.895238 3.339683 2.976046 3.283738 3.017072 3.252366 3.041840 3.232316 3.058403 3.218403 3.070255 3.208186 3.079153 3.200366 3.086080 3.194188 3.091624 3.189185</code></pre>
+</div>
+</section><section class="slide level2">
+
+<pre class="Rmd"><code> ```{r}
+ plot(cumsum( 4 * (-1)^(0:20) / (2*(0:20)+1) ))
+ abline(h=pi, col=&#39;red&#39;)
+ ```</code></pre>
+<div class="fragment">
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1"><span class="kw">plot</span>(<span class="kw">cumsum</span>( <span class="dv">4</span> <span class="op">*</span><span class="st"> </span>(<span class="op">-</span><span class="dv">1</span>)<span class="op">^</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">20</span>) <span class="op">/</span><span class="st"> </span>(<span class="dv">2</span><span class="op">*</span>(<span class="dv">0</span><span class="op">:</span><span class="dv">20</span>)<span class="op">+</span><span class="dv">1</span>) ))</a>
+<a class="sourceLine" id="cb23-2" title="2"><span class="kw">abline</span>(<span class="dt">h=</span>pi, <span class="dt">col=</span><span class="st">&#39;red&#39;</span>)</a></code></pre></div>
+<figure>
+<img data-src="figure/using-rmarkdown/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3" /><figcaption>plot of chunk unnamed-chunk-3</figcaption>
+</figure>
+</div>
+</section><section id="exercise" class="slide level2">
+<h2>Exercise</h2>
+<p>Make a short Rmarkdown document that</p>
+<ul>
+<li><p>checks that <span class="math display">\[1 + 2 + \cdots + n = n(n+1)/2\]</span> for every <span class="math inline">\(n\)</span> between 1 and 100</p></li>
+<li><p>shows these on a plot</p></li>
+<li><p>explains what’s being computed</p></li>
+</ul>
+<p><em>Useful:</em> <code>x = cumsum(1:100)</code> and <code>plot(x)</code> and <code>lines(y)</code>.</p>
+</section><section id="whats-going-on" class="slide level2">
+<h2>What’s going on</h2>
+<ol type="1">
+<li><p><code>knitr</code> uses a <em>regular expression</em> to find code chunks</p>
+<ul>
+<li>pulls these out,</li>
+<li>evaluates them one at a time</li>
+<li>and inserts “the results” back in</li>
+</ul></li>
+<li><p><code>pandoc</code> renders the resulting markdown file</p>
+<ul>
+<li>with various choices of styling</li>
+</ul></li>
+</ol>
+</section><section id="chunk-options" class="slide level2">
+<h2>Chunk options</h2>
+<p>Name each chunk, and set <a href="http://yihui.name/knitr/options/">options</a> for <a href="http://yihui.name/knitr/demo/output/">what gets printed</a></p>
+<pre class="Rmd"><code> ```{r my_chunk_name, fig.height=4, echo=FALSE}</code></pre>
+<dl>
+<dt><code>echo=(TRUE|FALSE)</code></dt>
+<dd><p>include source code in the output?</p>
+</dd>
+<dt><code>results="(markup|asis)"</code></dt>
+<dd><p>style the output or not?</p>
+</dd>
+<dt><code>include=(FALSE|TRUE)</code></dt>
+<dd><p>include anything in the output?</p>
+</dd>
+</dl>
+</section><section class="slide level2">
+
+<p>Set document defaults up top:</p>
+<pre class="Rmd"><code> ```{r, include=FALSE}
+ fig.dim &lt;- 5
+ library(knitr)
+ opts_chunk$set(
+        fig.height=fig.dim,
+        fig.width=2*fig.dim,
+        fig.align=&#39;center&#39;
+    )
+ ```</code></pre>
+</section><section id="tables" class="slide level2">
+<h2>Tables</h2>
+<p>One option: use <code>pander</code>.</p>
+<pre class="Rmd"><code> ```{r}
+ library(pander)
+ bases &lt;- table( sample( c(&quot;A&quot;,&quot;C&quot;,&quot;G&quot;,&quot;T&quot;), 300, replace=TRUE ) )
+ pander(t(bases))
+ ```</code></pre>
+<p><em>note:</em> the transpose <code>t( )</code></p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" title="1"> <span class="kw">library</span>(pander)</a>
+<a class="sourceLine" id="cb27-2" title="2"> bases &lt;-<span class="st"> </span><span class="kw">table</span>( <span class="kw">sample</span>( <span class="kw">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;G&quot;</span>,<span class="st">&quot;T&quot;</span>), <span class="dv">300</span>, <span class="dt">replace=</span><span class="ot">TRUE</span> ) )</a>
+<a class="sourceLine" id="cb27-3" title="3"> <span class="kw">pander</span>(<span class="kw">t</span>(bases))</a></code></pre></div>
+<table style="width:28%;">
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 6%" />
+<col style="width: 6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">A</th>
+<th style="text-align: center;">C</th>
+<th style="text-align: center;">G</th>
+<th style="text-align: center;">T</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">59</td>
+<td style="text-align: center;">71</td>
+<td style="text-align: center;">87</td>
+<td style="text-align: center;">83</td>
+</tr>
+</tbody>
+</table>
+</section><section id="inline-code" class="slide level2">
+<h2>Inline code</h2>
+<pre class="Rmd"><code>You can 
+`r paste(letters[c(9,14,19,5,18,20)],collapse=&#39;&#39;)` 
+code anywhere.</code></pre>
+<p>You can insert code anywhere.</p>
+</section><section class="slide level2">
+
+<p>Even in the YAML header.</p>
+<p>Go change yours!</p>
+<pre><code>---
+title: &quot;My notes&quot;
+author: &quot;Peter Ralph&quot;
+date: &quot;`r date()`&quot;
+---</code></pre>
+</section></section>
+<section><section id="online-example" class="title-slide slide level1"><h1>Online example</h1></section><section class="slide level2">
+
+<p><strong>Goal:</strong> Write a function that will generate all sequences of <code>A</code>/<code>C</code>/<code>G</code>/<code>T</code> of length <span class="math inline">\(n\)</span> for which no two adjacent letters are the same.</p>
+<div class="fragment">
+<p>Here is a <a href="examples/sequences.html">pre-written solution</a>.</p>
+</div>
+</section><section id="your-turn" class="slide level2">
+<h2>Your turn</h2>
+<p>Download the <a href="https://raw.githubusercontent.com/petrelharp/r-markdown-tutorial/master/examples/iris.tsv">iris dataset</a> to a new directory.</p>
+<p>or just do</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" title="1"><span class="kw">data</span>(iris)</a>
+<a class="sourceLine" id="cb30-2" title="2"><span class="kw">dir.create</span>(<span class="st">&quot;examples&quot;</span>)</a>
+<a class="sourceLine" id="cb30-3" title="3"><span class="kw">write.table</span>(iris,<span class="dt">file=</span><span class="st">&quot;examples/iris.tsv&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)</a></code></pre></div>
+</section><section class="slide level2">
+
+<ol type="1">
+<li><p>Read in the data.</p></li>
+<li><p>Describe the dataset: number of observations, variables, etcetera.</p>
+<ul>
+<li>inline <code>R</code> code (<code>`r nrow(iris)`</code>)</li>
+</ul></li>
+<li><p>Make a table of the number of observations for each species.</p>
+<ul>
+<li><code>pander()</code></li>
+<li>or <code>results="asis"</code> and <code>print.xtable(xtable( ),type='html')</code></li>
+</ul></li>
+<li><p>Plot the flower dimensions against each other,</p>
+<ul>
+<li>using <code>pairs()</code>, and colored by species.</li>
+</ul></li>
+</ol>
+</section></section>
+<section><section id="templated-reports" class="title-slide slide level1"><h1>Templated reports</h1></section><section class="slide level2">
+
+<p>Set up some fake data: each has 50 observations of two quantitative variables (<code>age</code> and <code>height</code>) and a categorical variable (<code>type</code>):</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" title="1"><span class="kw">dir.create</span>(<span class="st">&quot;examples/thedata&quot;</span>)</a>
+<a class="sourceLine" id="cb31-2" title="2">owd &lt;-<span class="st"> </span><span class="kw">setwd</span>(<span class="st">&quot;examples/thedata&quot;</span>)</a>
+<a class="sourceLine" id="cb31-3" title="3"><span class="cf">for</span> (samp <span class="cf">in</span> LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>]) {</a>
+<a class="sourceLine" id="cb31-4" title="4">    <span class="kw">dir.create</span>(samp)</a>
+<a class="sourceLine" id="cb31-5" title="5">    xy &lt;-<span class="st"> </span><span class="kw">data.frame</span>( </a>
+<a class="sourceLine" id="cb31-6" title="6">        <span class="dt">age=</span><span class="kw">exp</span>(<span class="kw">rnorm</span>(<span class="dv">50</span>)),</a>
+<a class="sourceLine" id="cb31-7" title="7">        <span class="dt">type=</span><span class="kw">sample</span>(letters[<span class="dv">1</span><span class="op">:</span><span class="dv">3</span>],<span class="dv">50</span>,<span class="dt">replace=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb31-8" title="8">    )</a>
+<a class="sourceLine" id="cb31-9" title="9">    xy<span class="op">$</span>height &lt;-<span class="st"> </span><span class="dv">5</span> <span class="op">+</span><span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)<span class="op">*</span>xy<span class="op">$</span>age <span class="op">+</span><span class="st"> </span><span class="dv">3</span><span class="op">*</span><span class="kw">runif</span>(<span class="dv">1</span>)<span class="op">*</span><span class="kw">as.numeric</span>(xy<span class="op">$</span>type) <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">50</span>)</a>
+<a class="sourceLine" id="cb31-10" title="10">    <span class="kw">write.table</span>(xy,<span class="dt">file=</span><span class="kw">paste0</span>(samp,<span class="st">&quot;/data.tsv&quot;</span>))</a>
+<a class="sourceLine" id="cb31-11" title="11">}</a>
+<a class="sourceLine" id="cb31-12" title="12"><span class="kw">setwd</span>(owd)</a></code></pre></div>
+</section><section class="slide level2">
+
+<p>We now have 10 datasets, each in a file like <a href="examples/thedata/A/data.tsv"><code>A/data.tsv</code></a>. Here’s what one looks like:</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" title="1">xy</a></code></pre></div>
+<pre><code>##            age type    height
+## 1   0.31707773    a  7.914611
+## 2   2.19582239    b 11.026011
+## 3   1.55221372    a  8.565385
+## 4   4.01149124    a  9.788000
+## 5   0.66919310    a  7.700931
+## 6  20.65951197    a 22.902957
+## 7   0.35980727    a  5.003123
+## 8   5.79973169    b 13.959134
+## 9   0.14888969    b  7.585979
+## 10  1.68566587    c 13.742501
+## 11  1.39484168    c 11.104901
+## 12  1.03709237    a  9.149147
+## 13  0.20094957    c 11.637219
+## 14  0.42865927    a  8.063438
+## 15  0.85432521    b 10.969470
+## 16  0.04779132    c 11.702954
+## 17  2.32633401    a  9.812272
+## 18  0.37340089    b  8.337178
+## 19 14.64741470    a 19.205178
+## 20  1.63314350    b  9.655089
+## 21  1.61788654    c 10.276301
+## 22  1.47744338    b 10.024203
+## 23  1.02522296    c 12.240497
+## 24  2.84797092    b  9.993902
+## 25  0.58462911    a  7.815480
+## 26  1.96041189    a  9.983420
+## 27  0.35619735    a  7.166195
+## 28  1.54160584    c 11.610713
+## 29  0.36191576    a  6.753099
+## 30  0.51411752    b  9.691261
+## 31  1.24080033    a  7.451592
+## 32  1.33257362    b 10.163221
+## 33  1.83785002    b  9.312483
+## 34  0.47428615    b  7.847135
+## 35  1.47378437    b  9.530141
+## 36  0.77179413    a  6.690088
+## 37  0.98417765    a  6.450861
+## 38  0.26468305    a  6.339068
+## 39  1.09840414    c 12.756140
+## 40  4.66346007    c 13.025881
+## 41  0.67197546    b 10.574617
+## 42  0.66340845    a  7.109553
+## 43  4.60134193    b 12.820813
+## 44  0.90235597    a  6.240945
+## 45  1.53748529    c 12.062709
+## 46  0.11785291    b  8.688989
+## 47  4.13447539    c 14.515374
+## 48  0.77918354    c 10.958445
+## 49  0.69097287    c 10.787374
+## 50  1.67836281    a  8.240941</code></pre>
+</section><section class="slide level2">
+
+<p>We would like to <em>visualize</em> each, like this:</p>
+<figure>
+<img data-src="figure/using-rmarkdown/plot_one_data-1.png" alt="plot of chunk plot_one_data" /><figcaption>plot of chunk plot_one_data</figcaption>
+</figure>
+</section><section class="slide level2">
+
+<p><strong>The template:</strong> <code>examples/simple-template.Rmd</code></p>
+<pre class="Rmd"><code> ---
+ title: &quot;Visualization for `r getwd()`&quot;
+ date: &quot;`r date()`&quot;
+ ---
+
+ ```{r setup, echo=FALSE}
+ input.file &lt;- &quot;data.tsv&quot;
+ xy &lt;- read.table(input.file)
+ ```
+
+ The file `r normalizePath(input.file)`
+ has `r nrow(xy)` observations:
+
+ ```{r}
+ plot( height ~ age, col=type, data=xy )
+ legend( &quot;topleft&quot;, pch=1, col=1:nlevels(xy$type) )
+ ```</code></pre>
+<p><strong>Input:</strong> this looks for the file <code>data.tsv</code> in the current directory.</p>
+</section><section class="slide level2">
+
+<p><strong>Render it:</strong></p>
+<p><em>Option 1:</em> copy the template into each of the ten directories, and render them there.</p>
+<div class="fragment">
+<p><em>Option 2:</em> use my <code>templater</code> package.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1"><span class="kw">library</span>(devtools)</a>
+<a class="sourceLine" id="cb35-2" title="2"><span class="kw">install_github</span>(<span class="st">&quot;petrelharp/templater&quot;</span>)</a>
+<a class="sourceLine" id="cb35-3" title="3"><span class="kw">library</span>(templater)</a>
+<a class="sourceLine" id="cb35-4" title="4">dir.names &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="st">&quot;examples/thedata&quot;</span>, LETTERS[<span class="dv">1</span><span class="op">:</span><span class="dv">8</span>])</a>
+<a class="sourceLine" id="cb35-5" title="5"><span class="cf">for</span> (input.dir <span class="cf">in</span> dir.names) {</a>
+<a class="sourceLine" id="cb35-6" title="6">    output.file &lt;-<span class="st"> </span><span class="kw">file.path</span>(input.dir, <span class="st">&quot;visualization.html&quot;</span>)</a>
+<a class="sourceLine" id="cb35-7" title="7">    <span class="kw">render_template</span>(<span class="st">&quot;examples/simple-template.Rmd&quot;</span>, <span class="dt">output=</span>output.file, </a>
+<a class="sourceLine" id="cb35-8" title="8">                    <span class="dt">change.rootdir=</span><span class="ot">TRUE</span>, <span class="dt">quiet=</span><span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb35-9" title="9">}</a></code></pre></div>
+</div>
+</section><section class="slide level2">
+
+<p><strong>Look at them:</strong></p>
+<pre class="Rmd"><code> ```{r make_links, results=&quot;asis&quot;}
+ output.files &lt;- file.path(&quot;examples/thedata&quot;, LETTERS[1:8], &quot;visualization.html&quot;)
+ links &lt;- paste(&quot;[&quot;,dir.names,&quot;](&quot;,output.files,&quot;)&quot;,sep=&#39;&#39;)
+ cat( paste(&quot;- &quot;, links, &quot;\n&quot;), &quot;\n&quot; )
+ ```</code></pre>
+<ul>
+<li><a href="examples/thedata/A/visualization.html">examples/thedata/A</a></li>
+<li><a href="examples/thedata/B/visualization.html">examples/thedata/B</a></li>
+<li><a href="examples/thedata/C/visualization.html">examples/thedata/C</a></li>
+<li><a href="examples/thedata/D/visualization.html">examples/thedata/D</a></li>
+<li><a href="examples/thedata/E/visualization.html">examples/thedata/E</a></li>
+<li><a href="examples/thedata/F/visualization.html">examples/thedata/F</a></li>
+<li><a href="examples/thedata/G/visualization.html">examples/thedata/G</a></li>
+<li><a href="examples/thedata/H/visualization.html">examples/thedata/H</a></li>
+</ul>
+</section><section id="another-exercise" class="slide level2">
+<h2>Another exercise</h2>
+<p><strong>Goal:</strong> Compare different <span class="math inline">\(k\)</span> with <span class="math inline">\(k\)</span>-means on the <code>iris</code> dataset.</p>
+<ol type="1">
+<li>Make subdirectories, called <code>iris/k</code>, for <span class="math inline">\(1 \le k \le 5\)</span>,</li>
+<li>and in each runs <code>kmeans</code> with the appropriate <code>k</code>.</li>
+</ol>
+<p>Example:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">data</span>(iris)</a>
+<a class="sourceLine" id="cb37-2" title="2">km &lt;-<span class="st"> </span><span class="kw">kmeans</span>(iris[,<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>], <span class="dt">centers=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb37-3" title="3"><span class="kw">pairs</span>(iris, <span class="dt">col=</span>km<span class="op">$</span>cluster)</a></code></pre></div>
+</section></section>
+<section><section id="other-resources" class="title-slide slide level1"><h1>Other resources</h1></section><section class="slide level2">
+
+<ul>
+<li><a href="http://kbroman.org/knitr_knutshell/pages/Rmarkdown.html">Karl Broman’s</a> intro to Rmarkdown</li>
+<li>the extensive, excellent <a href="http://pandoc.org/README.html">documentation for pandoc</a></li>
+<li><a href="http://stackoverflow.com/questions/tagged/rmarkdown">Stack</a><a href="http://stackoverflow.com/questions/tagged/knitr">Overflow</a></li>
+<li>my <a href="technical-notes.html">technical notes</a> I made while writing this up</li>
+</ul>
+</section></section>
+    </div>
+  </div>
+
+  <script src="reveal.js/lib/js/head.min.js"></script>
+  <script src="reveal.js/js/reveal.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://github.com/hakimel/reveal.js#configuration
+      Reveal.initialize({
+        // Display the page number of the current slide
+        slideNumber: true,
+        // Push each slide change to the browser history
+        history: true,
+        // Transition style
+        transition: 'none', // none/fade/slide/convex/concave/zoom
+        math: {
+          mathjax: '/usr/share/javascript/mathjax/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // Optional reveal.js plugins
+        dependencies: [
+          { src: 'reveal.js/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+          { src: 'reveal.js/plugin/zoom-js/zoom.js', async: true },
+          { src: 'reveal.js/plugin/math/math.js', async: true },
+          { src: 'reveal.js/plugin/notes/notes.js', async: true }
+        ]
+      });
+    </script>
+    </body>
+</html>

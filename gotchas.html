@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Peter Ralph" />
+  <meta name="dcterms.date" content="2015-10-26" />
+  <title>R+markdown gotchas</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <script src="/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  \[
+  %%
+  % Add your macros here; they'll be included in pdf and html output.
+  %%
+  
+  \newcommand{\R}{\mathbb{R}}    % reals
+  \newcommand{\E}{\mathbb{E}}    % expectation
+  \renewcommand{\P}{\mathbb{P}}  % probability
+  
+  \]
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">R+markdown gotchas</h1>
+<p class="author">Peter Ralph</p>
+<p class="date">26 October 2015</p>
+</header>
+<p>These things were confusing to me for a while. They might be to others also.</p>
+<h1 id="how-to-format-latex-for-pandoc">How to format <span class="math inline">\(\LaTeX\)</span> for pandoc</h1>
+<p>There are a lot of different ways to enter math in LaTeX already, and there’s more when using pandoc. This is kinda nice for the newcomer to LaTeX, since it’s more forgiving, but if you want to produce <em>both</em> html and pdf output, you have to do it just right. For html output, it seems safe to just wrap everything in $$s; but this breaks when passed to pdflatex. The solution, at least for now, is to use <code>\aligned</code> instead of <code>\align</code>:</p>
+<ul>
+<li>If you are producing pdf, pandoc will pass your LaTeX directly to pdflatex; so your code needs to be valid there.</li>
+<li>If you are producing html, pandoc <a href="https://github.com/jgm/pandoc/commit/4f0c5c30809f09bd700cd47035f86a3db1c64669">includes raw LaTeX blocks if –mathjax is specified</a>, so you can go ahead and use \align environments and everything.</li>
+<li>Definitions (\newcommand, etc) go at the top of the file, after the YAML header (but see below).</li>
+</ul>
+<p>For instance, this file:</p>
+<pre><code>\newcommand{\R}{\mathbb{R}}
+
+This is for $\R$eal.
+$$\begin{aligned}
+    e^{i\pi} = -1
+\end{aligned}$$</code></pre>
+<p>compiles just fine both with</p>
+<pre><code>pandoc test.md -o test.pdf
+pandoc test.md --standalone --mathjax -o test.html</code></pre>
+<h2 id="how-to-robustly-define-macros-that-work-for-both-pdf-and-html">How to robustly define macros that work for both pdf and html</h2>
+<p>The macros in the above example get expanded because all the math is in simple math environments. If you want to use ams environments like <code>\begin{align}</code>, then there’s <a href="https://github.com/jgm/pandoc/issues/2382">no way to include macros</a> directly in the document that works for both html and pdf output. One nice way around this is to keep your macros in a separate file which is passed to pandoc by a variable, and insert them in the header using the <code>-H</code> flag; you just have to make sure to wrap them in a math environment for mathjax to use them:</p>
+<pre><code># for pdf
+pandoc test.md -H macros.tex -o test.pdf
+# for html
+pandoc test.md -H &lt;(echo &#39;\[&#39;; cat macros.tex; echo &#39;\]&#39;) --mathjax --standalone -o test.html</code></pre>
+<h1 id="rmarkdown-does-not-work-with-templated-reports"><code>rmarkdown</code> does not work with templated reports</h1>
+<p>It’s nice and convenient to turn your <code>.Rmd</code> files into html using <code>rmarkdown</code>’s function <code>render()</code>. And, R+markdown is a great way to produce templated reports: write one .Rmd file; apply it to many datasets of the same structure. <strong>But</strong>, as I discovered the hard way, if you call, say, <code>render("template.Rmd",output_file="a.html")</code> and <code>render("template.Rmd",output_file="b.html")</code> at the same time in different R sessions, with different variables, you won’t get different reports, you’ll get the same one twice, silently. As far as I can tell, there’s <a href="https://github.com/rstudio/rmarkdown/issues/499">no workaround</a> with rmarkdown; the way to do it is to call <code>knitr</code> and <code>pandoc</code> yourself (which is what rmarkdown does under the hood anyhow).</p>
+<h1 id="name-every-chunk-a-different-name-even-in-different-files">Name every chunk a different name, <em>even in different files</em></h1>
+<p><code>knitr</code> caches figures in a subdirectory, by default called <code>figure/</code>. The same goes for the results of any <em>cached</em> chunk. You can, and should, change this, by specifying a file-specific prefix for the figures, for instance as follows:</p>
+<pre><code>```{r setup_knitr}
+knitr::opts_chunk$set(fig.path=file.path(&quot;figure&quot;,gsub(&quot;\.Rmd&quot;,&quot;&quot;,knitr::current_input()),&quot;&quot;),
+    cache.path=file.path(&quot;cache&quot;,gsub(&quot;\.Rmd&quot;,&quot;&quot;,knitr::current_input()),&quot;&quot;))
+```</code></pre>
+<p>or, defining Makefile rules:</p>
+<pre><code>%.md : %.Rmd
+    Rscript -e &#39;knitr::opts_chunk$$set(fig.path=file.path(&quot;figure&quot;,&quot;$*&quot;,&quot;&quot;),cache.path=file.path(&quot;cache&quot;,&quot;$*&quot;,&quot;&quot;));knitr::knit(basename(&quot;$&lt;&quot;),output=basename(&quot;$@&quot;))&#39;
+
+%.html : %.md
+    cd $(dir $&lt;) &amp;&amp; pandoc $(notdir $&lt;) $(PANDOC_OPTS) --output $(notdir $@)</code></pre>
+<h1 id="mathjax-cdns">Mathjax CDNs</h1>
+<p>For some versions of pandoc, the second command above wouldn’t have worked. That’s because pandoc would have inserted the URL <em>without</em> the <code>https://</code> in front, as discussed <a href="https://github.com/jgm/pandoc/issues/2200">here</a>. This works if the file is being served from a webserver, but not if you’re looking at it on your local computer (using the <code>file://</code> protocol). The solution is to pass in the mathjax URL explicitly:</p>
+<pre><code>pandoc test.md --standalone --mathjax=https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML -o test.html</code></pre>
+<p>… or to update your pandoc.</p>
+</body>
+</html>

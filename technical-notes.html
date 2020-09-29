@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Peter Ralph" />
+  <meta name="dcterms.date" content="2015-06-02" />
+  <title>Technical notes</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <script src="/usr/share/javascript/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  \[
+  %%
+  % Add your macros here; they'll be included in pdf and html output.
+  %%
+  
+  \newcommand{\R}{\mathbb{R}}    % reals
+  \newcommand{\E}{\mathbb{E}}    % expectation
+  \renewcommand{\P}{\mathbb{P}}  % probability
+  
+  \]
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Technical notes</h1>
+<p class="author">Peter Ralph</p>
+<p class="date">June 2, 2015</p>
+</header>
+<p>It might help to have an up-to-date <a href="http://pandoc.org">pandoc</a>. You can probably get an installer for the most recent version <a href="https://github.com/jgm/pandoc/releases/">here</a>.</p>
+<h1 id="pandoc-invocation">pandoc invocation</h1>
+<h2 id="general">General</h2>
+<ul>
+<li><code>-o (output file name)</code> : where to put output</li>
+<li><code>--standalone</code> : produces a standalone document, not a code fragment (using one of <a href="https://github.com/jgm/pandoc-templates">these</a> <a href="http://pandoc.org/README.html#templates">templates</a>)</li>
+<li><code>--from=(format name)[+/-(extension name)]</code> : what to write out to (defaults to html) and optional turning on/off of various behavior, <a href="http://pandoc.org/README.html#pandocs-markdown">listed here</a></li>
+<li><code>--include-in-header=(file name)</code> : at the end of the header, e.g. css, javascript, <code>\newcommand</code>, etc. (but see <code>--css</code>, and <a href="gotchas.html">gotachas</a> for latex macros)</li>
+<li><code>--include-before-body=(file name)</code> : at the beginning of the body, e.g. navigation bars, <code>\maketitle</code>, etc.</li>
+<li><code>--self-contained</code> : everything in one file (but see <code>--mathjax</code>)</li>
+<li><code>--mathjax[=URL]</code> : points to the <code>MathJax.js</code> script, <em>incompatible</em> with <code>--selfcontained</code></li>
+</ul>
+<h1 id="slides">Slides</h1>
+<h2 id="for-presentations">For presentations</h2>
+<p>See <a href="http://pandoc.org/README.html#producing-slide-shows-with-pandoc">the documentation</a></p>
+<ul>
+<li><p><code>--variable=KEY[:VAL]</code> : assign template variable KEY to VAL, for instance:</p>
+<ul>
+<li><code>theme</code> : for beamer or reveal.js presentations</li>
+<li>but note these can be also <a href="http://tex.stackexchange.com/questions/139139/adding-headers-and-footers-using-pandoc/139205#139205">set in metadata</a></li>
+</ul></li>
+<li><code>--incremental</code> : step through lists</li>
+<li><code>--slide-level</code> : headers above this level create sections; below this create slides.</li>
+<li><p><code>--css=(URL)</code> : include the css linked to</p></li>
+</ul>
+<h2 id="other-notes-on-making-slides">Other notes on making slides</h2>
+<p>A paragraph with three dots:</p>
+<pre><code>. . .</code></pre>
+<p>makes a pause.</p>
+<h2 id="other-styles-of-presentation">Other styles of presentation</h2>
+<p>There are various <a href="http://pandoc.org/README.html#producing-slide-shows-with-pandoc">styles of presentation</a> available.</p>
+<p>I ended up using <code>reveal.js</code>, so it’s included as a submodule, but <code>slidy</code> looked pretty good, too. Here’s notes on getting the prerequisites. There are rules in the Makefile to build the rest of these.</p>
+<ol type="1">
+<li><p>reveal.js : pandoc 1.12 works only with reveal.js &lt;= 2.6.2.</p>
+<p>So, if your pandoc is old, do this:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" title="1"><span class="bu">cd</span> reveal.js</a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="fu">git</span> checkout 2.6.2</a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="bu">cd</span> ..</a></code></pre></div></li>
+<li><p><strong>S5</strong> :</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb3-1" title="1"><span class="fu">mkdir</span> s5 <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> s5</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="fu">wget</span> http://meyerweb.com/eric/tools/s5/v/1.1/s5-11.zip</a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="fu">unzip</span> s5-11.zip </a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="fu">ln</span> -s ui/default default</a></code></pre></div></li>
+<li><p><strong>dzslides</strong> : No setup, but seems to be broken.</p></li>
+<li><p><strong>slidy</strong> : No setup, downloads from [w3c.org]</p></li>
+<li><p><strong>slideous</strong> : Doesn’t seem to produce a slideshow?</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode sh"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" title="1"><span class="fu">mkdir</span> slideous</a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="bu">cd</span> slideous/</a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="fu">wget</span> http://goessner.net/download/prj/slideous/slideous.zip</a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="fu">unzip</span> slideous.zip </a></code></pre></div></li>
+</ol>
+<h1 id="knitr-and-such">knitr and such</h1>
+<h2 id="options-for-rendering-using-r">Options for rendering using R</h2>
+<p>There are methods in the Makefile for rendering with each of these methods.</p>
+<ul>
+<li><p><code>markdown::markdownToHTML( )</code> : lightweight but does some styling</p>
+<ul>
+<li>used by <code>knitr::knit2html()</code></li>
+<li>automatically includes mathjax</li>
+</ul></li>
+<li><p><code>knitr::knit2html( )</code> : calls <code>markdown::markdownToHTML( )</code>, almost identical</p></li>
+<li><p><code>pander::Pandoc.convert( )</code> : looks quite nice, brings in jquery and others</p>
+<ul>
+<li><code>pander</code> is an entire schema to translate <code>R</code> objects <em>to markdown</em></li>
+<li>imports a bunch of javascript and css</li>
+<li>gave many people strange errors in Rstudio</li>
+</ul></li>
+<li><p><code>rmarkdown::render( )</code> : high-level, does everything, has a nice template.</p>
+<ul>
+<li>processes YAML header</li>
+<li>knits if necessary</li>
+<li>is what <code>Rstudio</code> relies on, which comes bundled with a binary for pandoc.</li>
+</ul></li>
+</ul>
+<h2 id="codeblocks-and-knitr">Codeblocks and <code>knitr</code></h2>
+<p><code>knitr</code> just uses a <em>regular expression</em> to identify chunks of code to parse:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">knitr<span class="op">::</span>all_patterns<span class="op">$</span>md<span class="op">$</span>chunk.begin</a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="co">## &quot;^[\t &gt;]*```+\\s*\\{[.]?([a-zA-Z]+.*)\\}\\s*$&quot;</span></a>
+<a class="sourceLine" id="cb5-3" title="3"></a>
+<a class="sourceLine" id="cb5-4" title="4">knitr<span class="op">::</span>all_patterns<span class="op">$</span>md<span class="op">$</span>chunk.end</a>
+<a class="sourceLine" id="cb5-5" title="5"><span class="co">## [1] &quot;^[\t &gt;]*```+\\s*$&quot;</span></a></code></pre></div>
+<p>Yihui’s trick for getting around this is to use R to insert an "" into the preamble, like so:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode md"><code class="sourceCode markdown"><a class="sourceLine" id="cb6-1" title="1"> `<span class="bn">`r &quot;&quot;`</span>``</a></code></pre></div>
+<p>Parsed that?</p>
+<p>Here’s an inline example:</p>
+<pre><code>inline `R` code (`` ``r &quot;r nrow(data)&quot;`` ``)</code></pre>
+<p><strong>Alternatively,</strong> you can make the patterns knitr uses to catch code blocks more strict. Here’s from the Makefile for this presentation:</p>
+<pre class="make"><code>KNITR_PATTERNS = list( chunk.begin=&quot;^```+\\s*\\{[.]?(r[a-zA-Z]*.*)\\}\\s*$$&quot;, chunk.end=&quot;^```+\\s*$$&quot;, inline.code=&quot;`r +([^`]+)\\s*`&quot;)
+
+%.md : %.Rmd
+    cd $$(dirname $&lt;); Rscript -e &#39;knitr::knit_patterns[[&quot;set&quot;]]($(KNITR_PATTERNS)); knitr::knit(basename(&quot;$&lt;&quot;),output=basename(&quot;$@&quot;))&#39;</code></pre>
+<h2 id="knitr-and-working-directories">Knitr and working directories</h2>
+<p>Yihui says that <code>setwd()</code> is <em>evil</em>, because it is not reproducible. <code>knit()</code> works from the directory the <code>.Rmd</code> file is in. You <em>can</em> change the directory <code>knitr</code> works in using</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">opts_knit<span class="op">$</span><span class="kw">set</span>(<span class="dt">root.dir=</span>NEW.DIR)</a></code></pre></div>
+<p>Since this is interpreted relative to the <em>working directory</em> of the R session that calls knitr, it may be best to always set</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode R"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">opts_knit<span class="op">$</span><span class="kw">set</span>(<span class="dt">root.dir=</span><span class="st">&quot;.&quot;</span>)</a></code></pre></div>
+<p>in templates. (But, beware of any dependencies!)</p>
+<p><em>Note:</em> some people try to call <code>setwd()</code> within their <code>.Rmd</code> file. But, <code>knitr</code> resets this for each chunk (and, chastises you!).</p>
+<h2 id="knitr-and-for-loops">knitr and for loops</h2>
+<p>If <code>knitr</code> doesn’t always make plots/output every time around the for loop, the problem might be there’s an error or something early on?</p>
+<h2 id="tables">Tables</h2>
+<p>One option: use <code>xtable</code> + <code>results="asis"</code>.</p>
+<pre class="Rmd"><code> ```{r results=&quot;asis&quot;}
+ library(xtable)
+ dtab &lt;- xtable( table( sample( letters, 300, replace=TRUE ) ) )
+ print(dtab,type=&#39;html&#39;)
+ ```</code></pre>
+<h1 id="more-on-templates">More on templates</h1>
+<p>Currently (8/17/2015), rmarkdown’s <code>render</code> function <a href="https://github.com/rstudio/rmarkdown/issues/499"><strong>cannot</strong> be used</a> for templates that might be compiled at the same time with different data. There is no workaround. This is too bad, because render parses the YAML header, and makes the resulting html look nice. Let’s look under the hood to see how to replicate it. Here’s the call to <code>pandoc</code>:</p>
+<p><code>pandoc</code>:</p>
+<ul>
+<li><code>+RTS -K512m -RTS</code> : this increases pandoc’s stack space</li>
+<li><code>test2.utf8.md</code> : the input file</li>
+<li><code>--to html</code> : the output format</li>
+<li><code>--from markdown+autolink_bare_uris+ascii_identifiers+tex_math_single_backslash-implicit_figures</code> : the input format
+<ul>
+<li><code>+autolink_bare_uris</code> : Makes all absolute URIs into links.</li>
+<li><code>+ascii_identifiers</code> : Causes the identifiers produced by auto_identifiers to be pure ASCII.</li>
+<li><code>+tex_math_single_backslash</code> : Causes <code>\(\)</code> and <code>\[\]</code> to be displayed as math.</li>
+<li><code>-implicit_figures</code> : An image occurring by itself in a paragraph will be rendered as a figure with a caption.</li>
+</ul></li>
+<li><code>--output one/one.html</code> : output file</li>
+<li><code>--smart</code> : curly quotes, em and en dashes, and ellipses.</li>
+<li><code>--email-obfuscation none</code></li>
+<li><code>--self-contained --standalone</code></li>
+<li><code>--section-divs</code> : Wrap sections in <code>&lt;div&gt;</code> tags.</li>
+<li><code>--template /usr/local/lib/R/site-library/rmarkdown/rmd/h/default.html</code> : rmarkdown’s template</li>
+<li><code>--variable 'theme:bootstrap'</code> : variable to the template</li>
+<li><code>--include-in-header /tmp/RtmpLnM0EY/rmarkdown-str65b85d06d7aa.html</code> : this does various things:
+<ul>
+<li><code>&lt;script src="/usr/local/lib/R/site-library/rmarkdown/rmd/h/jquery-1.11.0/jquery.min.js"&gt;&lt;/script&gt;</code></li>
+<li><code>&lt;meta name="viewport" content="width=device-width, initial-scale=1" /&gt;</code></li>
+<li><code>&lt;script src="/usr/local/lib/R/site-library/rmarkdown/rmd/h/bootstrap-3.3.1/js/bootstrap.min.js"&gt;&lt;/script&gt;</code></li>
+<li><code>&lt;script src="/usr/local/lib/R/site-library/rmarkdown/rmd/h/bootstrap-3.3.1/shim/html5shiv.min.js"&gt;&lt;/script&gt;</code></li>
+<li><code>&lt;script src="/usr/local/lib/R/site-library/rmarkdown/rmd/h/bootstrap-3.3.1/shim/respond.min.js"&gt;&lt;/script&gt;</code></li>
+<li>and includes <a href="https://necolas.github.io/normalize.css/3.0.2/normalize.css">normalize.css</a></li>
+</ul></li>
+<li><code>--mathjax --variable 'mathjax-url:https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'</code> : The template inserts mathjax itself.</li>
+<li><code>--no-highlight --variable highlightjs=/usr/local/lib/R/site-library/rmarkdown/rmd/h/highlight</code> : Turn off pandoc highlighting and tell the template to do the highlighting.</li>
+</ul>
+<p>We can trim this down to</p>
+<pre><code>MATHJAX=/usr/share/javascript/mathjax/MathJax.js  # for local mathjax
+PANDOC_OPTS=&quot;--to html --from markdown-implicit_figures \\
+    --standalone --self-contained --section-divs --template template.html \\
+    --variable &#39;theme:bootstrap&#39; --include-in-header resources/header-scripts.html \\
+    --mathjax --variable mathjax-url:$MATHJAX?config=TeX-AMS-MML_HTMLorMML&#39;&quot;</code></pre>
+<p>So, now to turn <code>input.Rmd</code> into <code>output.html</code>, in a safe way, we need to get the header-scripts file and then run</p>
+<pre><code>R --vanilla -e &#39;knitr::knit(&quot;input.Rmd&quot;,output=&quot;output.md&quot;)&#39;
+pandoc output.md ${PANDOC_OPTS} --output output.html</code></pre>
+<h1 id="formatting-and-layout">Formatting and layout</h1>
+<h2 id="customization">Customization</h2>
+<p>Options:</p>
+<ul>
+<li><p>modify a <a href="http://rmarkdown.rstudio.com/developer_custom_formats.html">rmarkdown format</a></p></li>
+<li><p>or a <a href="http://pandoc.org/README.html#templates">pandoc template</a></p></li>
+</ul>
+<h2 id="about-math-rendering">About math rendering</h2>
+<p>There are <a href="http://pandoc.org/README.html#math">many options</a>, but probably <code>--mathjax</code> is the best?</p>
+<p>Note that it is supposed to render as far as possible with unicode, but this m<span class="math inline">\(a\)</span>y depend on the proper fonts being installed?</p>
+<h2 id="other-types-of-text-line-blocks">Other types of text: line blocks</h2>
+<p>These are just markdown except it pays attention to linebreaks.</p>
+<pre><code>| Molecular &amp; Computational Biology
+| University of Southern California
+| 1050 Child Way, RRI 201 (MCB)
+| Los Angeles, CA 90089-2910</code></pre>
+<p><strong>produces</strong></p>
+<div class="line-block">Molecular &amp; Computational Biology<br />
+University of Southern California<br />
+1050 Child Way, RRI 201 (MCB)<br />
+Los Angeles, CA 90089-2910</div>
+<h2 id="other-types-of-text-definition-lists">Other types of text: definition lists</h2>
+<dl>
+<dt>To make a <strong>definition list</strong></dt>
+<dd><p>Each term must fit on one line, which may optionally be followed by a blank line, and must be followed by one or more definitions. A definition begins with a colon or tilde, which may be indented one or two spaces.</p>
+<p>A term may have multiple definitions, and each definition may consist of one or more block elements (paragraph, code block, list, etc.), each indented four spaces or one tab stop. The body of the definition (including the first line, aside from the colon or tilde) should be indented four spaces.</p>
+</dd>
+</dl>
+<h2 id="self-contained-documents">Self-contained documents</h2>
+<p>HTML documents can stitch together lots of different pieces: images, css, javascript, etcetera. These are <em>not</em> nice to email.</p>
+<p><em>But:</em> <code>pandoc</code> can produce <em>self-contained</em> documents, that are email-ready. <code>rmarkdown</code> does this by default.</p>
+<p><em>Warning:</em> the best way of displaying math relies on <a href="http://mathjax.org">mathjax</a>, which is a “large” javascript library, and is <em>not</em> included. If you use LaTeX math, you need to host a local copy of mathjax.</p>
+<h2 id="other-technicalities">Other technicalities</h2>
+<ul>
+<li><p><strong>indentation</strong> : one tab (four spaces) indicates a code block <em>except</em> within lists</p></li>
+<li><p><strong>header attributes</strong> can be specified by appending <code>{#identifier .class .class key=value key=value}</code> afterwards</p>
+<ul>
+<li>e.g. <code>{# foo .unnumbered}</code> makes a section that can be linked to with <code>[link to foo](#foo)</code> and is unnumbered</li>
+<li>but sections without identifiers will be assigned ones automatically</li>
+</ul></li>
+</ul>
+</body>
+</html>
